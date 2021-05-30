@@ -32,6 +32,7 @@ public class Mortgage_interest
         //date1.set();
         date2.set(2022, 2,31);
 
+        //SimpleDateFormat ft = new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");        
         SimpleDateFormat ft = new SimpleDateFormat ("E yyyy.MM.dd 'at' hh:mm:ss a zzz");        
         String date1_string = ft.format(date1.getTime());
         String date2_string = ft.format(date2.getTime());
