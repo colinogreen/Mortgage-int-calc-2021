@@ -28,12 +28,31 @@
             </goals>
             <configuration>
               <sources>
-                <source>/media/DRIVE2_EXT4/Public/repositories/java-custom-classes_2</source>
+                <source>/media/DRIVE2_EXT4/Public/repositories/java-custom-classes</source>
               </sources>
             </configuration>
           </execution>
         </executions>
       </plugin>
+
+     <plugin> 
+
+                <!-- Building an executable jar -->
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                  <archive>
+                    <manifest>
+
+                    <!-- give full qualified name of your main class-->
+                      <mainClass>com.mycompany.mortgage_int_calc_2021.Mortgage_interest</mainClass>
+
+                    </manifest>
+                  </archive>
+                </configuration>
+    </plugin>
     </plugins>
     </build>
 </project>

@@ -29,27 +29,39 @@ public class Mortgage_interest
         
         Scanner line = new Scanner(System.in);
         Finance_apr apr = new Finance_apr();
-        System.out.println(apr.promptForMonthlyRepayment());
-        String monthly_repay= line.nextLine();
-
+        
+        Mortgage_interest mc = new Mortgage_interest();
+        String monthly_repay = mc.getMonthlyRepaymentPrompt(apr, line);
+        
         System.out.println(apr.promptForDateOfCalculations(false));
         String end_date= line.nextLine();
-        
-        apr.setMonthRepayment(Integer.parseInt(monthly_repay));
+
+        //apr.setMonthRepayment(Integer.parseInt(monthly_repay));
+        apr.setMonthRepayment(Double.valueOf(monthly_repay));
         apr.setInterestRate(1.64);
         apr.setMortgageRemaining(23275.71);
         
         //** Run the program
         apr.processMortgateInterestCalculation();
-        //Finance_apr apr = new Finance_apr(245.21,22800, 3.75);
-        
-        
-        
 
-        //Mortgage_interest mc = new Mortgage_interest();
-        //mc.run(args);
 
     }
+        
+    private String getMonthlyRepaymentPrompt(Finance_apr apr, Scanner line)
+    {
+        System.out.println(apr.promptForMonthlyRepayment());
+        String monthly_repay= line.nextLine();
+        boolean num_double = apr.checkIfNumberIsADouble(monthly_repay);
+        
+        if(!num_double)
+        {
+            System.out.println("Not a valid number");
+            return this.getMonthlyRepaymentPrompt(apr, line);
+        }
+        
+        return monthly_repay;
+    }
+    
     public void run(String[] args)
     {
 //        apr = new Finance_apr();
