@@ -28,7 +28,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>/home/colino20_04/Dropbox/_JAVA</source>
+                <source>/media/DRIVE2_EXT4/Public/repositories/java-custom-classes_2</source>
               </sources>
             </configuration>
           </execution>

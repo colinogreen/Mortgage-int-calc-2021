@@ -11,6 +11,8 @@ import java.time.Month;
 import java.time.Period;
 import my.custom.finance.*;
 
+import java.util.Scanner;
+
 //import java.text.ParseException;
 import java.text.*;
 
@@ -23,10 +25,24 @@ public class Mortgage_interest
     
         public static void main(String[] args) {
         // TODO code application logic here
-        System.out.println("hello world!");
+        //System.out.println("hello world!");
+        
+        Scanner line = new Scanner(System.in);
+        Finance_apr apr = new Finance_apr();
+        System.out.println(apr.promptForMonthlyRepayment());
+        String monthly_repay= line.nextLine();
 
+        System.out.println(apr.promptForDateOfCalculations(false));
+        String end_date= line.nextLine();
+        
+        apr.setMonthRepayment(Integer.parseInt(monthly_repay));
+        apr.setInterestRate(1.64);
+        apr.setMortgageRemaining(23275.71);
+        
+        //** Run the program
+        apr.processMortgateInterestCalculation();
         //Finance_apr apr = new Finance_apr(245.21,22800, 3.75);
-        Finance_apr apr = new Finance_apr(196.96,23275.71, 1.64);
+        
         
         
 
