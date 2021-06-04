@@ -31,15 +31,20 @@ public class Mortgage_interest
         Finance_apr apr = new Finance_apr();
         
         Mortgage_interest mc = new Mortgage_interest();
-        String monthly_repay = mc.getMonthlyRepaymentPrompt(apr, line);
+        String monthly_repay = mc.getEnterMonthlyRepaymentPrompt(apr, line);
+        String int_rate = mc.getEnterInterestRatePrompt(apr, line);
+        String mort_remain = mc.getEnterMortgageRemainingPrompt(apr, line);
         
-        System.out.println(apr.promptForDateOfCalculations(false));
-        String end_date= line.nextLine();
+        //System.out.println(apr.promptForDateOfCalculations(false));
+        String start_date= mc.getStartOrEndDatePrompt(apr, line, true);
+        String end_date= mc.getStartOrEndDatePrompt(apr, line, false);
+        
+        
 
         //apr.setMonthRepayment(Integer.parseInt(monthly_repay));
         apr.setMonthRepayment(Double.valueOf(monthly_repay));
-        apr.setInterestRate(1.64);
-        apr.setMortgageRemaining(23275.71);
+        apr.setInterestRate(Double.valueOf(int_rate));
+        apr.setMortgageRemaining(Double.valueOf(mort_remain));
         
         //** Run the program
         apr.processMortgateInterestCalculation();
@@ -47,7 +52,7 @@ public class Mortgage_interest
 
     }
         
-    private String getMonthlyRepaymentPrompt(Finance_apr apr, Scanner line)
+    private String getEnterMonthlyRepaymentPrompt(Finance_apr apr, Scanner line)
     {
         System.out.println(apr.promptForMonthlyRepayment());
         String monthly_repay= line.nextLine();
@@ -56,10 +61,51 @@ public class Mortgage_interest
         if(!num_double)
         {
             System.out.println("Not a valid number");
-            return this.getMonthlyRepaymentPrompt(apr, line);
+            return this.getEnterMonthlyRepaymentPrompt(apr, line);
         }
         
         return monthly_repay;
+    }
+    
+    private String getEnterInterestRatePrompt(Finance_apr apr, Scanner line)
+    {
+        System.out.println(apr.promptForInterestRate());
+        String int_rate = line.nextLine();
+        boolean num_double = apr.checkIfNumberIsADouble(int_rate);
+        
+        if(!num_double)
+        {
+            System.out.println("Not a valid number");
+            return this.getEnterMonthlyRepaymentPrompt(apr, line);
+        }
+        
+        return int_rate;
+    }
+    
+    private String getEnterMortgageRemainingPrompt(Finance_apr apr, Scanner line)
+    {
+        System.out.println(apr.promptForMortgateRemaining());
+        String mort_remain = line.nextLine();
+        boolean num_double = apr.checkIfNumberIsADouble(mort_remain);
+        
+        if(!num_double)
+        {
+            System.out.println("Not a valid number");
+            return this.getEnterMonthlyRepaymentPrompt(apr, line);
+        }
+        
+        return mort_remain;
+    }
+    
+    private String getStartOrEndDatePrompt(Finance_apr apr, Scanner line, boolean start_or_end)
+    {
+        System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
+        String start_or_end_date = line.nextLine();
+        
+        /* @todo
+        Check that date is valid
+        */
+        return start_or_end_date;
     }
     
     public void run(String[] args)
