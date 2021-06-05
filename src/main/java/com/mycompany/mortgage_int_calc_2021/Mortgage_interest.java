@@ -24,30 +24,25 @@ public class Mortgage_interest
 {
     
         public static void main(String[] args) {
-        // TODO code application logic here
-        //System.out.println("hello world!");
-
         
         Scanner line = new Scanner(System.in);
         
+        // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Finance_apr.java
         Finance_apr apr = new Finance_apr();
         
         Mortgage_interest mc = new Mortgage_interest();
         
         //mc.debugHashMap(); // Comment out when not in use!
-        //mc.debugDateCalendar(); // Comment out when not in use
-        
+        //mc.debugDateCalendar(); // Comment out when not in use       
         //mc.debugDateTime(); // Comment out when not in use
         
         // Get the values from console input.
         String monthly_repay = mc.getEnterMonthlyRepaymentPrompt(apr, line);
         String int_rate = mc.getEnterInterestRatePrompt(apr, line);
         String mort_remain = mc.getEnterMortgageRemainingPrompt(apr, line);
-        
-        //System.out.println(apr.promptForDateOfCalculations(false));
+
         String start_date= mc.getStartOrEndDatePrompt(apr, line, true);
-        
-        
+               
         if(start_date.trim().equals(""))
         {
             apr.setDefaultDateFrom();
@@ -179,18 +174,43 @@ public class Mortgage_interest
         
         return mort_remain;
     }
-    
+    /**
+     * 
+     * @param apr
+     * @param line
+     * @param start_or_end (true for start | false for end)
+     * @return 
+     */
     private String getStartOrEndDatePrompt(Finance_apr apr, Scanner line, boolean start_or_end)
     {
         System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
         String start_or_end_date = line.nextLine();
         this.checkForQuit(start_or_end_date);
         
+        if(start_or_end == false &&!start_or_end_date.trim().equals(""))
+        {
+            apr.setCalendarDate(start_or_end_date.trim(), start_or_end);
+            boolean dategreaterthan = apr.isDateToGreaterThanDateFrom();
+            this.isDateToGreaterThanDateFromMessage(dategreaterthan, apr, line, start_or_end);      
+        }
+        
         /* @todo
         Check that date is valid
         */
             
         return start_or_end_date;
+    }
+    
+    
+    private String isDateToGreaterThanDateFromMessage(boolean dategreaterthan,Finance_apr apr, Scanner line, boolean start_or_end )
+    {
+        if(dategreaterthan == false)
+        {
+            System.out.println("The date to cannot be smaller the date from");
+            this.getStartOrEndDatePrompt(apr, line, start_or_end);
+        }
+        
+        return "";
     }
     
 //    public void run(String[] args)
