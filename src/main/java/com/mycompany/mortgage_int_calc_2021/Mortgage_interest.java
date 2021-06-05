@@ -48,13 +48,15 @@ public class Mortgage_interest
         
         if(start_date.trim().equals(""))
         {
-           System.out.println("No start date entered. Will use a default date");
+            apr.setDefaultDateFrom();
+            System.out.println("No start date entered. Will use a default date of "+ apr.getDefaultDateFrom());
         }
         String end_date= mc.getStartOrEndDatePrompt(apr, line, false);
         
         if(end_date.trim().equals(""))
         {
-           System.out.println("No end date entered. Will use a default date");
+           apr.setDefaultDateTo();
+           System.out.println("No end date entered. Will use a default date of " + apr.getDefaultDateTo());
         }        
         
 
@@ -71,10 +73,20 @@ public class Mortgage_interest
 
     }
         
+    public void checkForQuit(String keyboard_input)
+    {
+        if(keyboard_input.toLowerCase().equals("quit")|| keyboard_input.toLowerCase().equals("q"))
+        {
+            System.out.println("= Quit program selected =");
+            System.exit(0);
+        }
+    }
+        
     private String getEnterMonthlyRepaymentPrompt(Finance_apr apr, Scanner line)
     {
         System.out.println(apr.promptForMonthlyRepayment());
         String monthly_repay= line.nextLine();
+        checkForQuit(monthly_repay);
         boolean num_double = apr.checkIfNumberIsADouble(monthly_repay);
         
         if(!num_double)
@@ -90,6 +102,7 @@ public class Mortgage_interest
     {
         System.out.println(apr.promptForInterestRate());
         String int_rate = line.nextLine();
+        checkForQuit(int_rate);
         boolean num_double = apr.checkIfNumberIsADouble(int_rate);
         
         if(!num_double)
@@ -105,6 +118,7 @@ public class Mortgage_interest
     {
         System.out.println(apr.promptForMortgateRemaining());
         String mort_remain = line.nextLine();
+        checkForQuit(mort_remain);
         boolean num_double = apr.checkIfNumberIsADouble(mort_remain);
         
         if(!num_double)
@@ -120,6 +134,7 @@ public class Mortgage_interest
     {
         System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
         String start_or_end_date = line.nextLine();
+        checkForQuit(start_or_end_date);
         
         /* @todo
         Check that date is valid
