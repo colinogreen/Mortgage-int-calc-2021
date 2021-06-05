@@ -26,13 +26,15 @@ public class Mortgage_interest
         public static void main(String[] args) {
         // TODO code application logic here
         //System.out.println("hello world!");
-        
+
         
         Scanner line = new Scanner(System.in);
         
         Finance_apr apr = new Finance_apr();
         
         Mortgage_interest mc = new Mortgage_interest();
+        
+        //mc.debugHashMap(); // Comment out when not in use!
         //mc.debugDateCalendar(); // Comment out when not in use
         
         //mc.debugDateTime(); // Comment out when not in use
@@ -69,17 +71,65 @@ public class Mortgage_interest
         
         //** Run the program
         apr.processMortgateInterestCalculation();
+        
+        mc.promptForNextCommand(apr, line);
 
-
+    }
+        
+    public void promptForNextCommand(Finance_apr apr, Scanner line)
+    {
+        System.out.println();
+        System.out.println("* Enter a command (Enter -h or help): ");
+        String command = line.nextLine();
+        this.checkForQuit(command);
+        this.processCommand(command, apr, line);
+    }
+    
+    private void processCommand(String command, Finance_apr apr, Scanner line)
+    {
+        switch (command.toLowerCase())
+        {
+            
+            case "-h":
+            case "help":
+            this.showhelp(apr, line);
+            break;
+            case "-s":
+            case "summary":
+            apr.showSummary(true);
+            //this.promptForNextCommand(apr, line);
+            break;
+            default:
+            System.out.println("Try again.");
+            //System.out.println();
+             
+        }
+        this.promptForNextCommand(apr, line) ; 
+    }
+    
+    private void showhelp(Finance_apr apr, Scanner line)
+    {
+        System.out.println("-h or help:\tView help");
+        System.out.println("-q or quit: \tQuit this program");
+        System.out.println("-s or summary: \tView a summary of this calculation");
+        //System.out.println();
+        this.promptForNextCommand(apr, line); 
     }
         
     public void checkForQuit(String keyboard_input)
     {
-        if(keyboard_input.toLowerCase().equals("quit")|| keyboard_input.toLowerCase().equals("q"))
+        if(keyboard_input.toLowerCase().equals("quit")|| keyboard_input.toLowerCase().equals("-q"))
         {
-            System.out.println("= Quit program selected =");
+            System.out.println("\n== Quit program: " + this.checkForQuitMessage() + " ==");
             System.exit(0);
         }
+    }
+    
+    private String checkForQuitMessage()
+    {
+        String[] potential_messages = new String[]{"Bye, bye!", "Goodbye!", "Thanks for using my program!", "Visit again soon!"};
+
+        return potential_messages[new Random().nextInt(3)];
     }
         
     private String getEnterMonthlyRepaymentPrompt(Finance_apr apr, Scanner line)
@@ -102,7 +152,7 @@ public class Mortgage_interest
     {
         System.out.println(apr.promptForInterestRate());
         String int_rate = line.nextLine();
-        checkForQuit(int_rate);
+        this.checkForQuit(int_rate);
         boolean num_double = apr.checkIfNumberIsADouble(int_rate);
         
         if(!num_double)
@@ -118,7 +168,7 @@ public class Mortgage_interest
     {
         System.out.println(apr.promptForMortgateRemaining());
         String mort_remain = line.nextLine();
-        checkForQuit(mort_remain);
+        this.checkForQuit(mort_remain);
         boolean num_double = apr.checkIfNumberIsADouble(mort_remain);
         
         if(!num_double)
@@ -134,7 +184,7 @@ public class Mortgage_interest
     {
         System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
         String start_or_end_date = line.nextLine();
-        checkForQuit(start_or_end_date);
+        this.checkForQuit(start_or_end_date);
         
         /* @todo
         Check that date is valid
@@ -143,14 +193,14 @@ public class Mortgage_interest
         return start_or_end_date;
     }
     
-    public void run(String[] args)
-    {
-//        apr = new Finance_apr();
-//        
-//        apr.setMortgageRemaining(23233.82);
-//        apr.setInterestRate(1.64);
-//        apr.anotherHello();
-    } 
+//    public void run(String[] args)
+//    {
+////        apr = new Finance_apr();
+////        
+////        apr.setMortgageRemaining(23233.82);
+////        apr.setInterestRate(1.64);
+////        apr.anotherHello();
+//    } 
     
     /**
      * Testing Calender.set from input. Delete when not required.
@@ -187,6 +237,22 @@ public class Mortgage_interest
 
         System.out.println("Current date - Future date: " + period);
         //System.out.println("Future time: " + future_time.toString());
+        System.exit(0);
+    }
+    
+    private void debugHashMap()
+    {
+        
+        System.out.println("== Debugging method, debugHash ==");
+    HashMap<String, String> capitalCities = new HashMap<String, String>();
+
+    // Add keys and values (Country, City)
+    capitalCities.put("England", "London");
+    capitalCities.put("Germany", "Berlin");
+    capitalCities.put("Norway", "Oslo");
+    capitalCities.put("USA", "Washington DC");
+    System.out.println(capitalCities);        
+        
         System.exit(0);
     }
 }
