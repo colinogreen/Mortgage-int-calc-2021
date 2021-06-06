@@ -67,17 +67,26 @@ public class Mortgage_interest
         //** Run the program
         apr.processMortgateInterestCalculation();
         
-        mc.promptForNextCommand(apr, line);
+        mc.waitForNextCommand(apr, line);
 
     }
         
-    public void promptForNextCommand(Finance_apr apr, Scanner line)
+    public void waitForNextCommand(Finance_apr apr, Scanner line)
     {
         System.out.println();
         System.out.println("* Enter a command (Enter -h or help): ");
         String command = line.nextLine();
-        this.checkForQuit(command);
-        this.processCommand(command, apr, line);
+        // If a date has been entered, try and retrieve the relevant record for that date
+        if(apr.isDateEnteredValid(command.trim()))
+        {
+            // Attempt to retrieve a date was made so, loop back.
+            apr.showIndividualDateRecord(command.trim());
+            this.waitForNextCommand(apr, line) ;           
+        }
+        // Check for quit and process command if necessary.
+        this.checkForQuit(command.trim());
+        this.processCommand(command.trim(), apr, line); 
+
     }
     
     private void processCommand(String command, Finance_apr apr, Scanner line)
@@ -91,15 +100,18 @@ public class Mortgage_interest
             break;
             case "-s":
             case "summary":
-            apr.showSummary(true);
-            //this.promptForNextCommand(apr, line);
+            apr.showSelectedEntries(true);
+            break;
+            case "-a":
+            case "all":
+            apr.showSelectedEntries(false);
             break;
             default:
             System.out.println("Try again.");
             //System.out.println();
              
         }
-        this.promptForNextCommand(apr, line) ; 
+        this.waitForNextCommand(apr, line) ; 
     }
     
     private void showhelp(Finance_apr apr, Scanner line)
@@ -107,8 +119,9 @@ public class Mortgage_interest
         System.out.println("-h or help:\tView help");
         System.out.println("-q or quit: \tQuit this program");
         System.out.println("-s or summary: \tView a summary of this calculation");
+        System.out.println("-a or all: \tView every day of the mortgage search period in this calculation");
         //System.out.println();
-        this.promptForNextCommand(apr, line); 
+        this.waitForNextCommand(apr, line); 
     }
         
     public void checkForQuit(String keyboard_input)
