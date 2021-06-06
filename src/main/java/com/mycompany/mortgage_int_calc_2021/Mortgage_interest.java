@@ -193,6 +193,10 @@ public class Mortgage_interest
             boolean dategreaterthan = apr.isDateToGreaterThanDateFrom();
             this.isDateToGreaterThanDateFromMessage(dategreaterthan, apr, line, start_or_end);      
         }
+        else if(!start_or_end_date.trim().equals(""))
+        {
+            apr.setCalendarDate(start_or_end_date.trim(), start_or_end);
+        }
         
         /* @todo
         Check that date is valid
