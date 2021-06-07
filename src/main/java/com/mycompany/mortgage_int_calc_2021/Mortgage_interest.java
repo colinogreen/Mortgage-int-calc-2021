@@ -15,16 +15,21 @@ import java.util.Scanner;
 
 //import java.text.ParseException;
 import java.text.*;
-
+//import my.custom.MessageDisplayer;
 /**
  *
  * @author colino20_04
  */
 public class Mortgage_interest 
 {
-    
+        //private MessageDisplayer msgs;
         public static void main(String[] args) {
         
+        System.out.println("==================================");
+        System.out.println("   Mortgage Interest calculator   ");
+        System.out.println("        By Colin M.               ");
+        System.out.println("==================================");
+        System.out.println();
         Scanner line = new Scanner(System.in);
         
         // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Finance_apr.java
@@ -76,11 +81,13 @@ public class Mortgage_interest
         System.out.println();
         System.out.println("* Enter a command (Enter -h or help): ");
         String command = line.nextLine();
+        
         // If a date has been entered, try and retrieve the relevant record for that date
         if(apr.isDateEnteredValid(command.trim()))
         {
             // Attempt to retrieve a date was made so, loop back.
-            apr.showIndividualDateRecord(command.trim());
+            apr.setIndividualDateRecord(command.trim());
+            System.out.println(apr.getMessageString()); // Display the result
             this.waitForNextCommand(apr, line) ;           
         }
         // Check for quit and process command if necessary.
@@ -100,11 +107,11 @@ public class Mortgage_interest
             break;
             case "-s":
             case "summary":
-            apr.showSelectedEntries(true);
+            this.showSelectedEntries(apr,true);
             break;
             case "-a":
             case "all":
-            apr.showSelectedEntries(false);
+            this.showSelectedEntries(apr,false);
             break;
             default:
             System.out.println("Try again.");
@@ -112,6 +119,12 @@ public class Mortgage_interest
              
         }
         this.waitForNextCommand(apr, line) ; 
+    }
+    
+    private void showSelectedEntries(Finance_apr apr,Boolean show_summary)
+    {
+        apr.setSelectedEntries(show_summary);
+        System.out.println(apr.getMessageString());
     }
     
     private void showhelp(Finance_apr apr, Scanner line)
@@ -200,16 +213,31 @@ public class Mortgage_interest
         String start_or_end_date = line.nextLine();
         this.checkForQuit(start_or_end_date);
         
-        if(start_or_end == false &&!start_or_end_date.trim().equals(""))
+        if(!start_or_end_date.equals("") && !apr.isDateEnteredValid(start_or_end_date))
         {
-            apr.setCalendarDate(start_or_end_date.trim(), start_or_end);
-            boolean dategreaterthan = apr.isDateToGreaterThanDateFrom();
-            this.isDateToGreaterThanDateFromMessage(dategreaterthan, apr, line, start_or_end);      
+            // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
+            System.out.println("* The date (" + start_or_end_date + ") " + "appears to be invalid!");
+            return this.getStartOrEndDatePrompt(apr, line, start_or_end);
         }
-        else if(!start_or_end_date.trim().equals(""))
+        
+        if(!start_or_end_date.trim().equals(""))
         {
-            apr.setCalendarDate(start_or_end_date.trim(), start_or_end);
+            if(!apr.setCalendarDate(start_or_end_date.trim(), start_or_end))
+            {
+                System.out.println("* The date (" + start_or_end_date + ") could not be set!");
+                return this.getStartOrEndDatePrompt(apr, line, start_or_end);
+            }
+            if(start_or_end == false )
+            {
+                boolean dategreaterthan = apr.isDateToGreaterThanDateFrom();
+                this.isDateToGreaterThanDateFromMessage(dategreaterthan, apr, line, start_or_end);                 
+            }
+     
         }
+//        else if(!start_or_end_date.trim().equals(""))
+//        {
+//            apr.setCalendarDate(start_or_end_date.trim(), start_or_end);
+//        }
         
         /* @todo
         Check that date is valid
