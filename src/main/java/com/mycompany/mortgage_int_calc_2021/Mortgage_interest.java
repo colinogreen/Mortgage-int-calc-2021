@@ -30,6 +30,8 @@ public class Mortgage_interest
         System.out.println("        By Colin M.               ");
         System.out.println("==================================");
         System.out.println();
+        System.out.println("* Follow the prompts below (Enter -q or quit to exit): ");
+        System.out.println();
         Scanner line = new Scanner(System.in);
         
         // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Finance_apr.java
@@ -86,7 +88,7 @@ public class Mortgage_interest
         if(apr.isDateEnteredValid(command.trim()))
         {
             // Attempt to retrieve a date was made so, loop back.
-            apr.setIndividualDateRecord(command.trim());
+            apr.setMortgageIndividualDateRecord(command.trim());
             System.out.println(apr.getMessageString()); // Display the result
             this.waitForNextCommand(apr, line) ;           
         }
@@ -113,6 +115,10 @@ public class Mortgage_interest
             case "all":
             this.showSelectedEntries(apr,false);
             break;
+            case "-m":
+            case "milestones":
+            this.getMortgageMilestonesListFromClass(apr);
+            break;
             default:
             System.out.println("Try again.");
             //System.out.println();
@@ -121,18 +127,28 @@ public class Mortgage_interest
         this.waitForNextCommand(apr, line) ; 
     }
     
+    private void getMortgageMilestonesListFromClass(Finance_apr apr)
+    {
+        System.out.println("== Mortgage Milestones ==");
+        System.out.println(apr.getMortgageMilestonesList());
+    }
+    
     private void showSelectedEntries(Finance_apr apr,Boolean show_summary)
     {
-        apr.setSelectedEntries(show_summary);
+        apr.setMortgageSelectedEntries(show_summary);
         System.out.println(apr.getMessageString());
     }
     
     private void showhelp(Finance_apr apr, Scanner line)
     {
+
+        System.out.println("-a or all: \tView every day of the mortgage search period in this calculation");
+        System.out.println("date in format, yyyy-mm-dd:\tGet record for that day, if it exists");
         System.out.println("-h or help:\tView help");
+        System.out.println("-m or milestones:\tShow mortgage milestones for this run");
         System.out.println("-q or quit: \tQuit this program");
         System.out.println("-s or summary: \tView a summary of this calculation");
-        System.out.println("-a or all: \tView every day of the mortgage search period in this calculation");
+
         //System.out.println();
         this.waitForNextCommand(apr, line); 
     }
@@ -155,7 +171,7 @@ public class Mortgage_interest
         
     private String getEnterMonthlyRepaymentPrompt(Finance_apr apr, Scanner line)
     {
-        System.out.println(apr.promptForMonthlyRepayment());
+        System.out.println(apr.promptForMonthlyMortgageRepayment());
         String monthly_repay= line.nextLine();
         checkForQuit(monthly_repay);
         boolean num_double = apr.checkIfNumberIsADouble(monthly_repay);
@@ -187,7 +203,7 @@ public class Mortgage_interest
     
     private String getEnterMortgageRemainingPrompt(Finance_apr apr, Scanner line)
     {
-        System.out.println(apr.promptForMortgateRemaining());
+        System.out.println(apr.promptForMortgageRemaining());
         String mort_remain = line.nextLine();
         this.checkForQuit(mort_remain);
         boolean num_double = apr.checkIfNumberIsADouble(mort_remain);
@@ -257,15 +273,6 @@ public class Mortgage_interest
         
         return "";
     }
-    
-//    public void run(String[] args)
-//    {
-////        apr = new Finance_apr();
-////        
-////        apr.setMortgageRemaining(23233.82);
-////        apr.setInterestRate(1.64);
-////        apr.anotherHello();
-//    } 
     
     /**
      * Testing Calender.set from input. Delete when not required.
