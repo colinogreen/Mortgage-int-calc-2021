@@ -1,5 +1,6 @@
 my/custom/Script_timer.class
 com/mycompany/mortgage_int_calc_2021/Mortgage_interest.class
+my/custom/MessageDisplayer.class
 my/custom/File_operations.class
 my/custom/function/TestOutput.class
 my/custom/StringFinder.class

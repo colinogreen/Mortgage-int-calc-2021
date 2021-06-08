@@ -32,6 +32,15 @@ public class Mortgage_interest
         System.out.println();
         System.out.println("* Follow the prompts below (Enter -q or quit to exit): ");
         System.out.println();
+        
+//        if(args.length >0)
+//        {
+//            System.out.println("Debug: supplied args: " + Arrays.toString(args));
+//        }
+//        for(String a: args)
+//        {
+//            
+//        }
         Scanner line = new Scanner(System.in);
         
         // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Finance_apr.java
@@ -42,34 +51,50 @@ public class Mortgage_interest
         //mc.debugHashMap(); // Comment out when not in use!
         //mc.debugDateCalendar(); // Comment out when not in use       
         //mc.debugDateTime(); // Comment out when not in use
-        
+        String monthly_repay;
+        String int_rate;
+        String mort_remain;       
         // Get the values from console input.
-        String monthly_repay = mc.getEnterMonthlyRepaymentPrompt(apr, line);
-        String int_rate = mc.getEnterInterestRatePrompt(apr, line);
-        String mort_remain = mc.getEnterMortgageRemainingPrompt(apr, line);
-
-        String start_date= mc.getStartOrEndDatePrompt(apr, line, true);
-               
-        if(start_date.trim().equals(""))
+        if(args.length == 5)
         {
-            apr.setDefaultDateFrom();
-            System.out.println("No start date entered. Will use a default date of "+ apr.getDefaultDateFrom());
+            System.out.print("** Using supplied args: " + Arrays.toString(args));
+            System.out.println(" (Monthly repayment, interest rate, mortgage remaining, start date, end date)");
+            monthly_repay = args[0];
+            int_rate = args[1];
+            mort_remain = args[2];            
+            apr.setCalendarDate(args[3], true); // true start date           
+            apr.setCalendarDate(args[4], false); // false for end date           
         }
-        String end_date= mc.getStartOrEndDatePrompt(apr, line, false);
-        
-        if(end_date.trim().equals(""))
+        else
         {
-           apr.setDefaultDateTo();
-           System.out.println("No end date entered. Will use a default date of " + apr.getDefaultDateTo());
-        }        
+            monthly_repay = mc.getEnterMonthlyRepaymentPrompt(apr, line);
+            int_rate = mc.getEnterInterestRatePrompt(apr, line);
+            mort_remain = mc.getEnterMortgageRemainingPrompt(apr, line);
+
+            String start_date= mc.getStartOrEndDatePrompt(apr, line, true);
+
+            if(start_date.trim().equals(""))
+            {
+                apr.setDefaultDateFrom();
+                System.out.println("No start date entered. Will use a default date of "+ apr.getDefaultDateFrom());
+            }
+            String end_date= mc.getStartOrEndDatePrompt(apr, line, false);
+
+            if(end_date.trim().equals(""))
+            {
+               apr.setDefaultDateTo();
+               System.out.println("No end date entered. Will use a default date of " + apr.getDefaultDateTo());
+            }                
+        }
+    
         
 
         // Set the values that were entered in the console
         apr.setMonthRepayment(Double.valueOf(monthly_repay));
         apr.setInterestRate(Double.valueOf(int_rate));
         apr.setMortgageRemaining(Double.valueOf(mort_remain));
-        apr.setDateToCalculateFrom(start_date);
-        apr.setDateToCalculateTo(end_date);
+        //apr.setDateToCalculateFrom(start_date);
+        //apr.setDateToCalculateTo(end_date);
         
         //** Run the program
         apr.processMortgateInterestCalculation();
