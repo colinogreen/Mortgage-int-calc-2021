@@ -22,7 +22,9 @@ import java.text.*;
  */
 public class Mortgage_interest 
 {
-        //private MessageDisplayer msgs;
+        String monthly_repay = "";
+        String int_rate = "";
+        String mort_remain;           //private MessageDisplayer msgs;
         public static void main(String[] args) {
         
         System.out.println("==================================");
@@ -32,15 +34,7 @@ public class Mortgage_interest
         System.out.println();
         System.out.println("* Follow the prompts below (Enter -q or quit to exit): ");
         System.out.println();
-        
-//        if(args.length >0)
-//        {
-//            System.out.println("Debug: supplied args: " + Arrays.toString(args));
-//        }
-//        for(String a: args)
-//        {
-//            
-//        }
+
         Scanner line = new Scanner(System.in);
         
         // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Finance_apr.java
@@ -51,25 +45,18 @@ public class Mortgage_interest
         //mc.debugHashMap(); // Comment out when not in use!
         //mc.debugDateCalendar(); // Comment out when not in use       
         //mc.debugDateTime(); // Comment out when not in use
-        String monthly_repay;
-        String int_rate;
-        String mort_remain;       
+    
         // Get the values from console input.
         if(args.length == 5)
         {
-            System.out.print("** Using supplied args: " + Arrays.toString(args));
-            System.out.println(" (Monthly repayment, interest rate, mortgage remaining, start date, end date)");
-            monthly_repay = args[0];
-            int_rate = args[1];
-            mort_remain = args[2];            
-            apr.setCalendarDate(args[3], true); // true start date           
-            apr.setCalendarDate(args[4], false); // false for end date           
+            mc.validateArgsEntries(apr, args);
+
         }
         else
         {
-            monthly_repay = mc.getEnterMonthlyRepaymentPrompt(apr, line);
-            int_rate = mc.getEnterInterestRatePrompt(apr, line);
-            mort_remain = mc.getEnterMortgageRemainingPrompt(apr, line);
+            mc.monthly_repay = mc.getEnterMonthlyRepaymentPrompt(apr, line);
+            mc.int_rate = mc.getEnterInterestRatePrompt(apr, line);
+            mc.mort_remain = mc.getEnterMortgageRemainingPrompt(apr, line);
 
             String start_date= mc.getStartOrEndDatePrompt(apr, line, true);
 
@@ -86,21 +73,56 @@ public class Mortgage_interest
                System.out.println("No end date entered. Will use a default date of " + apr.getDefaultDateTo());
             }                
         }
-    
-        
-
         // Set the values that were entered in the console
-        apr.setMonthRepayment(Double.valueOf(monthly_repay));
-        apr.setInterestRate(Double.valueOf(int_rate));
-        apr.setMortgageRemaining(Double.valueOf(mort_remain));
-        //apr.setDateToCalculateFrom(start_date);
-        //apr.setDateToCalculateTo(end_date);
+        apr.setMonthRepayment(Double.valueOf(mc.monthly_repay));
+        apr.setInterestRate(Double.valueOf(mc.int_rate));
+        apr.setMortgageRemaining(Double.valueOf(mc.mort_remain));
         
         //** Run the program
         apr.processMortgateInterestCalculation();
         
         mc.waitForNextCommand(apr, line);
 
+    }
+        
+    private void validateArgsEntries( Finance_apr apr, String[] args)
+    {
+        //System.out.print("** Using supplied args: " + Arrays.toString(args));
+        //System.out.println(" (Monthly repayment, interest rate, mortgage remaining, start date, end date)");
+
+        if(apr.vaidateNumberAsDouble(args[0], "monthly_repayment"))
+        {
+            this.monthly_repay = args[0];
+        }
+        //monthly_repay = args[0];
+
+        if(apr.vaidateNumberAsDouble(args[1], "interest_rate"))
+        {
+            this.int_rate = args[1];
+        } 
+        //int_rate = args[1];
+        if(apr.vaidateNumberAsDouble(args[2], "mortgage_remaining"))
+        {
+            this.mort_remain = args[2];
+        }             
+        //mort_remain = args[2];            
+        apr.setCalendarDate(args[3], true); // true start date           
+        apr.setCalendarDate(args[4], false); // false for end date 
+
+        this.exitIfErrors(apr); // If supplied arguments are not validated, exit program
+    }
+    
+    private void exitIfErrors(Finance_apr apr)
+    {
+        if(apr.getErrorListCount() >0)
+        {
+            for(Object e: apr.getErrorListItems())
+            {
+                System.out.println((String)e);
+            }
+
+            System.exit(0);
+        }        
     }
         
     public void waitForNextCommand(Finance_apr apr, Scanner line)
@@ -199,7 +221,7 @@ public class Mortgage_interest
         System.out.println(apr.promptForMonthlyMortgageRepayment());
         String monthly_repay= line.nextLine();
         checkForQuit(monthly_repay);
-        boolean num_double = apr.checkIfNumberIsADouble(monthly_repay);
+        boolean num_double = apr.checkIfInputNumberIsADouble(monthly_repay);
         
         if(!num_double)
         {
@@ -215,7 +237,7 @@ public class Mortgage_interest
         System.out.println(apr.promptForInterestRate());
         String int_rate = line.nextLine();
         this.checkForQuit(int_rate);
-        boolean num_double = apr.checkIfNumberIsADouble(int_rate);
+        boolean num_double = apr.checkIfInputNumberIsADouble(int_rate);
         
         if(!num_double)
         {
@@ -231,7 +253,7 @@ public class Mortgage_interest
         System.out.println(apr.promptForMortgageRemaining());
         String mort_remain = line.nextLine();
         this.checkForQuit(mort_remain);
-        boolean num_double = apr.checkIfNumberIsADouble(mort_remain);
+        boolean num_double = apr.checkIfInputNumberIsADouble(mort_remain);
         
         if(!num_double)
         {
