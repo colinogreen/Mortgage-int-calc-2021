@@ -90,18 +90,18 @@ public class Mortgage_interest
         //System.out.print("** Using supplied args: " + Arrays.toString(args));
         //System.out.println(" (Monthly repayment, interest rate, mortgage remaining, start date, end date)");
 
-        if(apr.vaidateNumberAsDouble(args[0], "monthly_repayment"))
+        if(apr.validateNumberAsDouble("monthly_repayment", args[0], "The monthly repayment entered is invalid (" + args[0].substring(0, Math.min(15, args[0].length())) + ")"))
         {
             this.monthly_repay = args[0];
         }
         //monthly_repay = args[0];
 
-        if(apr.vaidateNumberAsDouble(args[1], "interest_rate"))
+        if(apr.validateNumberAsDouble("interest_rate", args[1], "The interest rate entered is invalid (" + args[1].substring(0, Math.min(15, args[1].length())) + ")"))
         {
             this.int_rate = args[1];
         } 
         //int_rate = args[1];
-        if(apr.vaidateNumberAsDouble(args[2], "mortgage_remaining"))
+        if(apr.validateNumberAsDouble("mortgage_remaining",args[2], "The mortgage amount remaining is invalid (" + args[2].substring(0, Math.min(15, args[2].length())) + ")"))
         {
             this.mort_remain = args[2];
         }             
@@ -116,7 +116,7 @@ public class Mortgage_interest
     {
         if(apr.getErrorListCount() >0)
         {
-            for(Object e: apr.getErrorListItems())
+            for(Object e: apr.getErrorListValuesArray())
             {
                 System.out.println((String)e);
             }
