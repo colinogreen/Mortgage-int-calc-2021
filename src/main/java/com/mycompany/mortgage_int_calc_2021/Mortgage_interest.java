@@ -30,6 +30,7 @@ public class Mortgage_interest
             
         Mortgage_interest mc = new Mortgage_interest();
         mc.checkIfShowhelpCommandLineArguments(args);
+        
         System.out.println("==================================");
         System.out.println("   Mortgage Interest calculator   ");
         System.out.println("        By Colin M.               ");
@@ -52,8 +53,8 @@ public class Mortgage_interest
         // Get the values from console input.
         if(args.length == 5)
         {
+            // * Attempt to set parameters from command line
             mc.validateArgsEntries(apr, args);
-
         }
         else
         {
@@ -152,6 +153,9 @@ public class Mortgage_interest
         {          
             apr.getMortgageDayFiguresRangeFromTo(date_range[1], date_range[2]);
             System.out.println(apr.getMessageString()); // Display the result
+            System.out.println(); 
+            
+            System.out.println(apr.getMortgageInputSummary());
             this.waitForNextCommand(apr, line) ; 
         }       
          // If a date has been entered, try and retrieve the relevant record for that date
@@ -160,6 +164,8 @@ public class Mortgage_interest
             // Attempt to retrieve a date was made so, loop back.
             apr.setMortgageIndividualDateRecord(date_range[1]);
             System.out.println(apr.getMessageString()); // Display the result
+            System.out.println();
+            System.out.println(apr.getMortgageInputSummary());
             this.waitForNextCommand(apr, line) ;           
         }
     }
@@ -209,9 +215,8 @@ public class Mortgage_interest
         System.out.println(apr.getMortgageInputSummary());
     }
     /**
-     * Th
-     * @param apr
-     * @param line 
+     * Show command line arguments if requested by user
+     * @param args 
      */
     private void checkIfShowhelpCommandLineArguments(String[] args)
     {
