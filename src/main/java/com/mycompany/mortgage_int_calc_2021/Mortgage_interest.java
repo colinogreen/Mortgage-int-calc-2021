@@ -26,8 +26,10 @@ public class Mortgage_interest
         String int_rate = "";
         String mort_remain;           //private MessageDisplayer msgs;
         
-        public static void main(String[] args) {
-        
+    public static void main(String[] args) {
+            
+        Mortgage_interest mc = new Mortgage_interest();
+        mc.checkIfShowhelpCommandLineArguments(args);
         System.out.println("==================================");
         System.out.println("   Mortgage Interest calculator   ");
         System.out.println("        By Colin M.               ");
@@ -41,7 +43,7 @@ public class Mortgage_interest
         // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Finance_apr.java
         Finance_apr apr = new Finance_apr();
         
-        Mortgage_interest mc = new Mortgage_interest();
+        
         
         //mc.debugHashMap(); // Comment out when not in use!
         //mc.debugDateCalendar(); // Comment out when not in use       
@@ -143,7 +145,7 @@ public class Mortgage_interest
      */
     private void attemptToGetDateInput(Finance_apr apr, Scanner line, String command)
     {
-        String[] date_range = command.split(" ");
+        String[] date_range = command.trim().split("\\s+");
         System.out.println("** Debug: date_range -" + Arrays.toString(date_range));
         // if two dates have been entered with the first parameter, -r (range)...
         if(date_range.length == 3 && date_range[0].equals("-r") )
@@ -206,12 +208,32 @@ public class Mortgage_interest
         System.out.println(apr.getMessageString());
         System.out.println(apr.getMortgageInputSummary());
     }
+    /**
+     * Th
+     * @param apr
+     * @param line 
+     */
+    private void checkIfShowhelpCommandLineArguments(String[] args)
+    {
+        if(args.length == 1 && (args[0].toLowerCase().equals("-h") || args[0].toLowerCase().equals("--help")) )
+        {
+            System.out.println();
+            System.out.println("Five Arguments accepted at this command line are as follows:");
+            System.out.println("[monthly repayment] [interest rate] [mortgage remaining] [date from] [date to]");
+            System.out.println("-h or --help:\tView help");
+
+            //System.out.println();
+            System.exit(0); 
+        }
+
+    }
     
     private void showhelp(Finance_apr apr, Scanner line)
     {
 
         System.out.println("-a or all: \tView every day of the mortgage search period in this calculation");
-        System.out.println("date in format, yyyy-mm-dd:\tGet record for that day, if it exists");
+        System.out.println("-d yyyy-mm-dd:\tGet record for that day, if it exists");
+        System.out.println("-r yyyy-mm-dd yyyy-mm-dd:\tGet range of records for the two dates, if they exist.");
         System.out.println("-h or help:\tView help");
         System.out.println("-m or milestones:\tShow mortgage milestones for this run");
         System.out.println("-q or quit: \tQuit this program");
