@@ -25,6 +25,7 @@ public class Mortgage_interest
         String monthly_repay = "";
         String int_rate = "";
         String mort_remain;           //private MessageDisplayer msgs;
+        
         public static void main(String[] args) {
         
         System.out.println("==================================");
@@ -63,14 +64,14 @@ public class Mortgage_interest
             if(start_date.trim().equals(""))
             {
                 apr.setDefaultDateFrom();
-                System.out.println("No start date entered. Will use a default date of "+ apr.getDefaultDateFrom());
+                System.out.println("No start date entered. Will use a default date of "+ apr.getCalendarDateFrom());
             }
             String end_date= mc.getStartOrEndDatePrompt(apr, line, false);
 
             if(end_date.trim().equals(""))
             {
                apr.setDefaultDateTo();
-               System.out.println("No end date entered. Will use a default date of " + apr.getDefaultDateTo());
+               System.out.println("No end date entered. Will use a default date of " + apr.getCalendarDateTo());
             }                
         }
         // Set the values that were entered in the console
@@ -80,21 +81,18 @@ public class Mortgage_interest
         
         //** Run the program
         apr.processMortgateInterestCalculation();
-        
+        System.out.println(apr.getMortgageInputSummary());
         mc.waitForNextCommand(apr, line);
 
     }
         
     private void validateArgsEntries( Finance_apr apr, String[] args)
     {
-        //System.out.print("** Using supplied args: " + Arrays.toString(args));
-        //System.out.println(" (Monthly repayment, interest rate, mortgage remaining, start date, end date)");
 
         if(apr.validateNumberAsDouble("monthly_repayment", args[0], "The monthly repayment entered is invalid (" + args[0].substring(0, Math.min(15, args[0].length())) + ")"))
         {
             this.monthly_repay = args[0];
         }
-        //monthly_repay = args[0];
 
         if(apr.validateNumberAsDouble("interest_rate", args[1], "The interest rate entered is invalid (" + args[1].substring(0, Math.min(15, args[1].length())) + ")"))
         {
@@ -127,22 +125,41 @@ public class Mortgage_interest
         
     public void waitForNextCommand(Finance_apr apr, Scanner line)
     {
-        System.out.println();
+        //System.out.println(apr.getMortgageInputSummary());
         System.out.println("* Enter a command (Enter -h or help): ");
         String command = line.nextLine();
-        
-        // If a date has been entered, try and retrieve the relevant record for that date
-        if(apr.isDateEnteredValid(command.trim()))
-        {
-            // Attempt to retrieve a date was made so, loop back.
-            apr.setMortgageIndividualDateRecord(command.trim());
-            System.out.println(apr.getMessageString()); // Display the result
-            this.waitForNextCommand(apr, line) ;           
-        }
+
+        this.attemptToGetDateInput(apr, line, command);
         // Check for quit and process command if necessary.
         this.checkForQuit(command.trim());
         this.processCommand(command.trim(), apr, line); 
 
+    }
+    /**
+     * Find individual date or a date range.
+     * @param apr
+     * @param line
+     * @param command 
+     */
+    private void attemptToGetDateInput(Finance_apr apr, Scanner line, String command)
+    {
+        String[] date_range = command.split(" ");
+        System.out.println("** Debug: date_range -" + Arrays.toString(date_range));
+        // if two dates have been entered with the first parameter, -r (range)...
+        if(date_range.length == 3 && date_range[0].equals("-r") )
+        {          
+            apr.getMortgageDayFiguresRangeFromTo(date_range[1], date_range[2]);
+            System.out.println(apr.getMessageString()); // Display the result
+            this.waitForNextCommand(apr, line) ; 
+        }       
+         // If a date has been entered, try and retrieve the relevant record for that date
+        else if(date_range.length == 2 &&  date_range[0].trim().equals("-d") && apr.isDateEnteredValid(date_range[1].trim()))
+        {
+            // Attempt to retrieve a date was made so, loop back.
+            apr.setMortgageIndividualDateRecord(date_range[1]);
+            System.out.println(apr.getMessageString()); // Display the result
+            this.waitForNextCommand(apr, line) ;           
+        }
     }
     
     private void processCommand(String command, Finance_apr apr, Scanner line)
@@ -176,14 +193,18 @@ public class Mortgage_interest
     
     private void getMortgageMilestonesListFromClass(Finance_apr apr)
     {
-        System.out.println("== Mortgage Milestones ==");
+        System.out.println("== Mortgage Milestones ==\n");
         System.out.println(apr.getMortgageMilestonesList());
+        System.out.println(apr.getMortgageInputSummary());
     }
     
     private void showSelectedEntries(Finance_apr apr,Boolean show_summary)
     {
+        String list_type = show_summary ? "monthly summary": "all";
+        System.out.println("== List of " + list_type + " entries ==\n");
         apr.setMortgageSelectedEntries(show_summary);
         System.out.println(apr.getMessageString());
+        System.out.println(apr.getMortgageInputSummary());
     }
     
     private void showhelp(Finance_apr apr, Scanner line)
