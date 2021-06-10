@@ -147,25 +147,47 @@ public class Mortgage_interest
     private void attemptToGetDateInput(Finance_apr apr, Scanner line, String command)
     {
         String[] date_range = command.trim().split("\\s+");
-        System.out.println("** Debug: date_range -" + Arrays.toString(date_range));
+        //System.out.println("** Debug: date_range -" + Arrays.toString(date_range));
         // if two dates have been entered with the first parameter, -r (range)...
         if(date_range.length == 3 && date_range[0].equals("-r") )
         {          
             apr.getMortgageDayFiguresRangeFromTo(date_range[1], date_range[2]);
-            System.out.println(apr.getMessageString()); // Display the result
-            System.out.println(); 
-            
-            System.out.println(apr.getMortgageInputSummary());
+            if(apr.getErrorListCount() == 0)
+            {
+                System.out.println("== Selected range: " + date_range[1] + "- " + date_range[2] + " ==" );
+                System.out.println(apr.getMessageString()); // Display the result
+                System.out.println(); 
+
+                System.out.println(apr.getMortgageInputSummary());                
+            }
+            else
+            {
+                System.out.println(apr.getErrorListMessages());
+            }
+
             this.waitForNextCommand(apr, line) ; 
         }       
          // If a date has been entered, try and retrieve the relevant record for that date
-        else if(date_range.length == 2 &&  date_range[0].trim().equals("-d") && apr.isDateEnteredValid(date_range[1].trim()))
+        else if(date_range.length == 2 &&  date_range[0].trim().equals("-d") && apr.isDateEnteredValid(date_range[1]))
         {
-            // Attempt to retrieve a date was made so, loop back.
-            apr.setMortgageIndividualDateRecord(date_range[1]);
-            System.out.println(apr.getMessageString()); // Display the result
-            System.out.println();
-            System.out.println(apr.getMortgageInputSummary());
+//            System.out.print("\n++ Debug apr.isDateEnteredValid(date_range[1]): " + apr.isDateEnteredValid(date_range[1]));
+//            System.out.print(" | Debug apr.getErrorListCount: " + apr.getErrorListCount());
+//            System.out.println(" | Debug date_range.length: " + date_range.length + " ++\n");            
+            apr.setMortgageIndividualDateRecord(date_range[1]);  
+            
+            if(apr.getErrorListCount() == 0)
+            {               
+                System.out.println("== Selected date: " + date_range[1] + " ==");
+                System.out.println();
+                System.out.println(apr.getMessageString()); // Display the result
+                
+                System.out.println(apr.getMortgageInputSummary());
+            }
+            else
+            {
+                System.out.println(apr.getErrorListMessages());
+            }
+            // Attempt to retrieve a date was made so, loop back.               
             this.waitForNextCommand(apr, line) ;           
         }
     }
@@ -193,7 +215,6 @@ public class Mortgage_interest
             break;
             default:
             System.out.println("Try again.");
-            //System.out.println();
              
         }
         this.waitForNextCommand(apr, line) ; 
