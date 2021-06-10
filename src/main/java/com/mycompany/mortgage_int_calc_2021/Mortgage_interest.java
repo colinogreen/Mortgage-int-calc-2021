@@ -43,9 +43,7 @@ public class Mortgage_interest
         
         // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Finance_apr.java
         Finance_apr apr = new Finance_apr();
-        
-        
-        
+ 
         //mc.debugHashMap(); // Comment out when not in use!
         //mc.debugDateCalendar(); // Comment out when not in use       
         //mc.debugDateTime(); // Comment out when not in use
@@ -224,7 +222,11 @@ public class Mortgage_interest
     {
         System.out.println("== Mortgage Milestones ==\n");
         System.out.println(apr.getMortgageMilestonesList());
-        System.out.println(apr.getMortgageInputSummary());
+        if(apr.getMortgageMilestonesCount() >0)
+        {
+            System.out.println(apr.getMortgageInputSummary());
+        }
+        
     }
     
     private void showSelectedEntries(Finance_apr apr,Boolean show_summary)
@@ -288,9 +290,9 @@ public class Mortgage_interest
     private String getEnterMonthlyRepaymentPrompt(Finance_apr apr, Scanner line)
     {
         System.out.println(apr.promptForMonthlyMortgageRepayment());
-        String monthly_repay= line.nextLine();
-        checkForQuit(monthly_repay);
-        boolean num_double = apr.checkIfInputNumberIsADouble(monthly_repay);
+        String monthly_repayment= line.nextLine();
+        checkForQuit(monthly_repayment);
+        boolean num_double = apr.checkIfInputNumberIsADouble(monthly_repayment);
         
         if(!num_double)
         {
@@ -298,39 +300,56 @@ public class Mortgage_interest
             return this.getEnterMonthlyRepaymentPrompt(apr, line);
         }
         
-        return monthly_repay;
+        boolean too_large = apr.checkIfEnteredNumberTooLarge(monthly_repayment, "monthly_repayment", apr.MAX_MONTHLY_REPAYMENT, "Monthly repayment is too large. Max is " + apr.MAX_MONTHLY_REPAYMENT + ".");
+        if(too_large)
+        {
+            System.out.println(apr.getErrorListMessages());
+            return this.getEnterMonthlyRepaymentPrompt(apr, line);           
+        }
+        return monthly_repayment;
     }
     
     private String getEnterInterestRatePrompt(Finance_apr apr, Scanner line)
     {
         System.out.println(apr.promptForInterestRate());
-        String int_rate = line.nextLine();
-        this.checkForQuit(int_rate);
-        boolean num_double = apr.checkIfInputNumberIsADouble(int_rate);
+        String interest_rate = line.nextLine();
+        this.checkForQuit(interest_rate);
+        boolean num_double = apr.checkIfInputNumberIsADouble(interest_rate);
         
         if(!num_double)
         {
             System.out.println("Not a valid number");
-            return this.getEnterMonthlyRepaymentPrompt(apr, line);
+            return this.getEnterInterestRatePrompt(apr, line);
         }
         
-        return int_rate;
+        boolean too_large = apr.checkIfEnteredNumberTooLarge(interest_rate, "interest_rate", apr.MAX_MORTGAGE_INT_RATE, "The mortgage interest rate is invalid. Maximum: " + apr.MAX_MORTGAGE_INT_RATE + ".");
+        if(too_large)
+        {
+            System.out.println(apr.getErrorListMessages());
+            return this.getEnterInterestRatePrompt(apr, line);           
+        }        
+        return interest_rate;
     }
     
     private String getEnterMortgageRemainingPrompt(Finance_apr apr, Scanner line)
     {
         System.out.println(apr.promptForMortgageRemaining());
-        String mort_remain = line.nextLine();
-        this.checkForQuit(mort_remain);
-        boolean num_double = apr.checkIfInputNumberIsADouble(mort_remain);
+        String mort_remaining = line.nextLine();
+        this.checkForQuit(mort_remaining);
+        boolean num_double = apr.checkIfInputNumberIsADouble(mort_remaining);
         
         if(!num_double)
         {
             System.out.println("Not a valid number");
-            return this.getEnterMonthlyRepaymentPrompt(apr, line);
+            return this.getEnterMortgageRemainingPrompt(apr, line);
         }
-        
-        return mort_remain;
+        boolean too_large = apr.checkIfEnteredNumberTooLarge(mort_remaining, "mort_remaining", apr.MAX_MORTGAGE_LOAN, "The mortgage loan amount remaining is invalid. Maximum: " + apr.MAX_MORTGAGE_LOAN + ".");
+        if(too_large)
+        {
+            System.out.println(apr.getErrorListMessages());
+            return this.getEnterMortgageRemainingPrompt(apr, line);           
+        }            
+        return mort_remaining;
     }
     /**
      * 
