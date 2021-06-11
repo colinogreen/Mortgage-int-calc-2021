@@ -22,9 +22,9 @@ import java.text.*;
  */
 public class Mortgage_interest 
 {
-        String monthly_repay = "";
-        String int_rate = "";
-        String mort_remain;           //private MessageDisplayer msgs;
+    String monthly_repay = "";
+    String int_rate = "";
+    String mort_remain;
         
     public static void main(String[] args) {
             
@@ -62,20 +62,6 @@ public class Mortgage_interest
 
             mc.setStartOrEndDateFromPrompt(apr, line,null, true);
             mc.setStartOrEndDateFromPrompt(apr, line,apr.getCalendarDateFrom(), false);
-
-//            if(start_date.trim().equals(""))
-//            {
-//                apr.setDefaultDateFrom();
-//                System.out.println(" * No start date entered. Will use a default date of "+ apr.getCalendarDateFrom() +"\n");
-//            }
-//            //String end_date= mc.setStartOrEndDate(apr, line, false);
-//            String end_date= mc.setStartOrEndDate(apr, line,apr.getCalendarDateFrom(), false);
-//            
-//            if(end_date.trim().equals(""))
-//            {
-//               apr.setDefaultDateTo();
-//               System.out.println(" * No end date entered. Will use a default date of " + apr.getCalendarDateTo() +"\n");
-//            }
 
         }
         // Set the values that were entered in the console
@@ -381,14 +367,14 @@ public class Mortgage_interest
 //                + apr.MAX_MORTGAGE_TERM + " start_or_end_date = "+ start_or_end_date);
         this.checkForQuit(date_input);
         
-        if(date_input.isEmpty()&& processing_start_date)
+        if(date_input.trim().isEmpty()&& processing_start_date)
         {
             apr.resetMessageString();
             apr.setDefaultDateFrom(); // * Set start date
             System.out.println(apr.getMessageString());
             return true;
         } 
-        else if(date_input.isEmpty()&& !processing_start_date)
+        else if(date_input.trim().isEmpty()&& !processing_start_date)
         {
             apr.resetMessageString();
             apr.setDefaultDateTo(); //* Set end date
