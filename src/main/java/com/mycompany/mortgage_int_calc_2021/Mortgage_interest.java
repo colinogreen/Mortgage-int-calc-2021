@@ -383,8 +383,6 @@ public class Mortgage_interest
         
         if(date_input.isEmpty()&& processing_start_date)
         {
-            // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
-            //System.out.println("* The date (" + date_input + ") " + "appears to be invalid!");
             apr.resetMessageString();
             apr.setDefaultDateFrom(); // * Set start date
             System.out.println(apr.getMessageString());
@@ -392,8 +390,6 @@ public class Mortgage_interest
         } 
         else if(date_input.isEmpty()&& !processing_start_date)
         {
-            // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
-            //System.out.println("* The date (" + date_input + ") " + "appears to be invalid!");
             apr.resetMessageString();
             apr.setDefaultDateTo(); //* Set end date
             System.out.println(apr.getMessageString());
