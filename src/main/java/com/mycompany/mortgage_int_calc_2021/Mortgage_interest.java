@@ -65,14 +65,14 @@ public class Mortgage_interest
             if(start_date.trim().equals(""))
             {
                 apr.setDefaultDateFrom();
-                System.out.println("No start date entered. Will use a default date of "+ apr.getCalendarDateFrom());
+                System.out.println(" * No start date entered. Will use a default date of "+ apr.getCalendarDateFrom() +"\n");
             }
             String end_date= mc.getStartOrEndDatePrompt(apr, line, false);
 
             if(end_date.trim().equals(""))
             {
                apr.setDefaultDateTo();
-               System.out.println("No end date entered. Will use a default date of " + apr.getCalendarDateTo());
+               System.out.println(" * No end date entered. Will use a default date of " + apr.getCalendarDateTo() +"\n");
             }                
         }
         // Set the values that were entered in the console
@@ -292,20 +292,13 @@ public class Mortgage_interest
         System.out.println(apr.promptForMonthlyMortgageRepayment());
         String monthly_repayment= line.nextLine();
         checkForQuit(monthly_repayment);
-        boolean num_double = apr.checkIfInputNumberIsADouble(monthly_repayment);
+        //oolean num_double = apr.checkIfInputNumberIsADouble(monthly_repayment);
         
-        if(!num_double)
+        if(!this.isNumberInputValid(apr, monthly_repayment,Double.valueOf(apr.MAX_MONTHLY_REPAYMENT), 10, "monthly_repayment", "monthly repayment"))
         {
-            System.out.println("Not a valid number");
             return this.getEnterMonthlyRepaymentPrompt(apr, line);
         }
-        
-        boolean too_large = apr.checkIfEnteredNumberTooLarge(monthly_repayment, "monthly_repayment", apr.MAX_MONTHLY_REPAYMENT, "Monthly repayment is too large. Max is " + apr.MAX_MONTHLY_REPAYMENT + ".");
-        if(too_large)
-        {
-            System.out.println(apr.getErrorListMessages());
-            return this.getEnterMonthlyRepaymentPrompt(apr, line);           
-        }
+
         return monthly_repayment;
     }
     
@@ -314,20 +307,24 @@ public class Mortgage_interest
         System.out.println(apr.promptForInterestRate());
         String interest_rate = line.nextLine();
         this.checkForQuit(interest_rate);
-        boolean num_double = apr.checkIfInputNumberIsADouble(interest_rate);
-        
-        if(!num_double)
+        //boolean num_double = apr.checkIfInputNumberIsADouble(interest_rate);
+
+        if(!this.isNumberInputValid(apr, interest_rate,apr.MAX_MORTGAGE_INT_RATE, 0.1, "interest_rate", "mortgage interest rate"))
         {
-            System.out.println("Not a valid number");
             return this.getEnterInterestRatePrompt(apr, line);
-        }
-        
-        boolean too_large = apr.checkIfEnteredNumberTooLarge(interest_rate, "interest_rate", apr.MAX_MORTGAGE_INT_RATE, "The mortgage interest rate is invalid. Maximum: " + apr.MAX_MORTGAGE_INT_RATE + ".");
-        if(too_large)
-        {
-            System.out.println(apr.getErrorListMessages());
-            return this.getEnterInterestRatePrompt(apr, line);           
         }        
+//        if(!num_double)
+//        {
+//            System.out.println("Not a valid number");
+//            return this.getEnterInterestRatePrompt(apr, line);
+//        }
+//        
+//        boolean too_large = apr.checkIfEnteredNumberTooLarge(interest_rate, apr.MAX_MORTGAGE_INT_RATE, "interest_rate", "mortgage interest rate");
+//        if(too_large)
+//        {
+//            System.out.println(apr.getErrorListMessages());
+//            return this.getEnterInterestRatePrompt(apr, line);           
+//        }        
         return interest_rate;
     }
     
@@ -336,20 +333,49 @@ public class Mortgage_interest
         System.out.println(apr.promptForMortgageRemaining());
         String mort_remaining = line.nextLine();
         this.checkForQuit(mort_remaining);
-        boolean num_double = apr.checkIfInputNumberIsADouble(mort_remaining);
+        //boolean num_double = apr.checkIfInputNumberIsADouble(mort_remaining);
+
+        if(!this.isNumberInputValid(apr, mort_remaining,Double.valueOf(apr.MAX_MORTGAGE_LOAN), 1000, "mort_remaining", "mortgage loan amount"))
+        {
+            return this.getEnterMortgageRemainingPrompt(apr, line);
+        }             
+//        if(!num_double)
+//        {
+//            System.out.println("Not a valid number");
+//            return this.getEnterMortgageRemainingPrompt(apr, line);
+//        }
+//        boolean too_large = apr.checkIfEnteredNumberTooLarge(mort_remaining, apr.MAX_MORTGAGE_LOAN, "mort_remaining", "mortgage loan amount");
+//        if(too_large)
+//        {
+//            System.out.println(apr.getErrorListMessages());
+//            return this.getEnterMortgageRemainingPrompt(apr, line);           
+//        }            
+        return mort_remaining;
+    }
+    
+    private boolean isNumberInputValid(Finance_apr apr,String input_number,double max_num, double min_num, String field_name, String field_label)
+    {
+        boolean num_double = apr.checkIfInputNumberIsADouble(input_number);
         
         if(!num_double)
         {
             System.out.println("Not a valid number");
-            return this.getEnterMortgageRemainingPrompt(apr, line);
+            return false;
         }
-        boolean too_large = apr.checkIfEnteredNumberTooLarge(mort_remaining, "mort_remaining", apr.MAX_MORTGAGE_LOAN, "The mortgage loan amount remaining is invalid. Maximum: " + apr.MAX_MORTGAGE_LOAN + ".");
+        
+        boolean too_large = apr.checkIfInputNumberTooLarge(input_number, max_num, field_name, field_label);
         if(too_large)
         {
             System.out.println(apr.getErrorListMessages());
-            return this.getEnterMortgageRemainingPrompt(apr, line);           
-        }            
-        return mort_remaining;
+            return false;           
+        }
+        boolean too_small = apr.checkIfInputNumberTooSmall(input_number, min_num, field_name, field_label);
+        if(too_small)
+        {
+            System.out.println(apr.getErrorListMessages());
+            return false;
+        }       
+        return true;
     }
     /**
      * 
