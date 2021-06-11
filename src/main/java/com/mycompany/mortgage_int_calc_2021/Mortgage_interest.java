@@ -60,21 +60,22 @@ public class Mortgage_interest
             mc.int_rate = mc.getEnterInterestRatePrompt(apr, line);
             mc.mort_remain = mc.getEnterMortgageRemainingPrompt(apr, line);
 
-            String start_date= mc.getStartOrEndDatePrompt(apr, line,null, true);
+            mc.setStartOrEndDateFromPrompt(apr, line,null, true);
+            mc.setStartOrEndDateFromPrompt(apr, line,apr.getCalendarDateFrom(), false);
 
-            if(start_date.trim().equals(""))
-            {
-                apr.setDefaultDateFrom();
-                System.out.println(" * No start date entered. Will use a default date of "+ apr.getCalendarDateFrom() +"\n");
-            }
-            //String end_date= mc.getStartOrEndDatePrompt(apr, line, false);
-            String end_date= mc.getStartOrEndDatePrompt(apr, line,apr.getCalendarDateFrom(), false);
-            
-            if(end_date.trim().equals(""))
-            {
-               apr.setDefaultDateTo();
-               System.out.println(" * No end date entered. Will use a default date of " + apr.getCalendarDateTo() +"\n");
-            }
+//            if(start_date.trim().equals(""))
+//            {
+//                apr.setDefaultDateFrom();
+//                System.out.println(" * No start date entered. Will use a default date of "+ apr.getCalendarDateFrom() +"\n");
+//            }
+//            //String end_date= mc.setStartOrEndDate(apr, line, false);
+//            String end_date= mc.setStartOrEndDate(apr, line,apr.getCalendarDateFrom(), false);
+//            
+//            if(end_date.trim().equals(""))
+//            {
+//               apr.setDefaultDateTo();
+//               System.out.println(" * No end date entered. Will use a default date of " + apr.getCalendarDateTo() +"\n");
+//            }
 
         }
         // Set the values that were entered in the console
@@ -354,48 +355,16 @@ public class Mortgage_interest
         }       
         return true;
     }
-//    /**
-//     * Note: This will need rewrite (overload)
-//     * @param apr
-//     * @param line
-//     * @param start_or_end (true for start | false for end)
-//     * @return 
-//     */
-//    private String getStartOrEndDatePrompt(Finance_apr apr, Scanner line, boolean start_or_end)
-//    {
-//        System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
-//        String start_or_end_date = line.nextLine();
-//        this.checkForQuit(start_or_end_date);
-//        
-//        if(!start_or_end_date.equals("") && !apr.isDateEnteredValid(start_or_end_date))
-//        {
-//            // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
-//            System.out.println("* The date (" + start_or_end_date + ") " + "appears to be invalid!");
-//            return this.getStartOrEndDatePrompt(apr, line, start_or_end);
-//        }
-//        
-//        if(!start_or_end_date.trim().equals(""))
-//        {
-//            if(!apr.setCalendarDate(start_or_end_date.trim(), start_or_end))
-//            {
-//                System.out.println("* The date (" + start_or_end_date + ") could not be set!");
-//                return this.getStartOrEndDatePrompt(apr, line, start_or_end);
-//            }
-//            
-//            if(start_or_end == false )
-//            {
-//                if(!apr.isDateToGreaterThanDateFrom())
-//                {
-//                    System.out.println("The date to cannot be smaller the date from");
-//                    this.getStartOrEndDatePrompt(apr, line, start_or_end);                   
-//                }
-//                //this.isDateToGreaterThanDateFromMessage(dategreaterthan, apr, line, start_or_end);                 
-//            }
-//     
-//        }
-//            
-//        return start_or_end_date;
-//    }
+    private void setStartOrEndDateFromPrompt(Finance_apr apr, Scanner line,String start_date, boolean start_or_end)
+    {
+        System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
+        String start_or_end_date = line.nextLine(); 
+        //boolean set_date = ;
+        if(!this.setStartOrEndDate(apr, start_or_end_date, start_date, start_or_end))
+        {
+            this.setStartOrEndDateFromPrompt(apr,line,start_date, start_or_end);
+        }
+    }
     /**
      * @param apr
      * @param line
@@ -403,72 +372,85 @@ public class Mortgage_interest
      * @param start_or_end
      * @return 
      */
-    private String getStartOrEndDatePrompt(Finance_apr apr, Scanner line,String start_date, boolean start_or_end)
+    //private String setStartOrEndDate(Finance_apr apr, Scanner line,String start_date, boolean start_or_end)
+    private boolean setStartOrEndDate(Finance_apr apr, String date_input,String start_date, boolean processing_start_date)
     {
         
-        System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
-        String start_or_end_date = line.nextLine();
+
 //        System.out.println("**DEBUG evaluating getStartOrEndDatePrompt overload: start_date: " + start_date + " - apr.MAX_MORTGAGE_TERM: " 
 //                + apr.MAX_MORTGAGE_TERM + " start_or_end_date = "+ start_or_end_date);
-        this.checkForQuit(start_or_end_date);
+        this.checkForQuit(date_input);
         
-        //* Check for invalid input
-        if(!start_or_end_date.equals("") && !apr.isDateEnteredValid(start_or_end_date))
+        if(date_input.isEmpty()&& processing_start_date)
         {
             // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
-            System.out.println("* The date (" + start_or_end_date + ") " + "appears to be invalid!");
-            return this.getStartOrEndDatePrompt(apr, line,start_date, start_or_end);
+            //System.out.println("* The date (" + date_input + ") " + "appears to be invalid!");
+            apr.resetMessageString();
+            apr.setDefaultDateFrom(); // * Set start date
+            System.out.println(apr.getMessageString());
+            return true;
+        } 
+        else if(date_input.isEmpty()&& !processing_start_date)
+        {
+            // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
+            //System.out.println("* The date (" + date_input + ") " + "appears to be invalid!");
+            apr.resetMessageString();
+            apr.setDefaultDateTo(); //* Set end date
+            System.out.println(apr.getMessageString());
+            return true;
+        } 
+            
+        //* Check for invalid input
+        if( !apr.isDateEnteredValid(date_input))
+        {
+            // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
+            System.out.println("* The date (" + date_input + ") " + "appears to be invalid!");
+            return false;
         }
         
-        else if(!start_or_end_date.trim().equals(""))
-        {
+//        else if(!date_input.trim().equals(""))
+//        {
             // 1. Check if console input is on the end_date/date_to field (false)
-            if(start_or_end == false )
-            {
-                // System.out.println("**DEBUG evaluating MAX YEARS getStartOrEndDatePrompt overload: start_date: " + start_date + " - start_or_end_date - " + start_or_end_date + "- apr.MAX_MORTGAGE_TERM: " + apr.MAX_MORTGAGE_TERM); 
-                
-                //* 1a. check the end date to see if it is 40 years or more past the start date. If so, return to prompt after displaying error.
-                if(start_date != null && (!apr.isLocalDateValid("local_date",start_or_end_date) || apr.isDateDifferenceGreaterThanLimit(start_date, start_or_end_date, "end date", apr.MAX_MORTGAGE_TERM)) )
-                {
-                    
-                    System.out.println(apr.getErrorListMessages());
-                    //line.reset();
-                    return this.getStartOrEndDatePrompt(apr, line,start_date, start_or_end);
+        if(processing_start_date == false )
+        {
+            //System.out.println("**DEBUG evaluating MAX YEARS getStartOrEndDatePrompt overload: start_date: " + start_date + " - processing date_input - " + date_input + "- apr.MAX_MORTGAGE_TERM: " + apr.MAX_MORTGAGE_TERM); 
 
-                }
-            }
-            //* 2. Check that the console input is not an invalid date
-            if(!apr.setCalendarDate(start_or_end_date.trim(), start_or_end))
+            //* 1a. check the end date to see if it is 40 years or more past the start date. If so, return to prompt after displaying error.
+            if(start_date != null && (!apr.isLocalDateValid("local_date",date_input) || apr.isDateDifferenceGreaterThanLimit(start_date, date_input, "end date", apr.MAX_MORTGAGE_TERM)) )
             {
-                System.out.println("* The date (" + start_or_end_date + ") could not be set!");
-                return this.getStartOrEndDatePrompt(apr, line,start_date, start_or_end);
+
+                System.out.println(apr.getErrorListMessages());
+                //line.reset();
+                //return this.setStartOrEndDate(apr, line,start_date, processing_start_date);
+                return false;
+
             }
-            //* 3. Check that end_date/date_to is greater than start_date.
-            else if(start_or_end == false )
-            {
-                if(!apr.isDateToGreaterThanDateFrom())
-                {
-                    System.out.println("The date to cannot be smaller the date from");
-                    this.getStartOrEndDatePrompt(apr, line,start_date, start_or_end);                   
-                }
-                //this.isDateToGreaterThanDateFromMessage(dategreaterthan, apr, line, start_or_end);                 
-            }
-    
+
+            //return true;
         }
+        //* 2. Check that the console input is not an invalid date
+        if(!apr.setCalendarDate(date_input.trim(), processing_start_date))
+        {
+            System.out.println("* The date (" + date_input + ") could not be set!");
+            return false;
+        }
+        //* 3. Check that end_date/date_to is greater than start_date.
+        else if(processing_start_date == false )
+        {
+            if(!apr.isDateToGreaterThanDateFrom())
+            {
+                System.out.println("The date to cannot be smaller the date from");
+                return false;                   
+            }
+            //this.isDateToGreaterThanDateFromMessage(dategreaterthan, apr, line, start_or_end);                 
+        }
+//    
+//        }
 
             
-        return start_or_end_date;
+        return true;
     }    
-//    private String isDateToGreaterThanDateFromMessage(boolean dategreaterthan,Finance_apr apr, Scanner line, boolean start_or_end )
-//    {
-//        if(dategreaterthan == false)
-//        {
-//            System.out.println("The date to cannot be smaller the date from");
-//            this.getStartOrEndDatePrompt(apr, line, start_or_end);
-//        }
-//        
-//        return "";
-//    }
+
     
     /**
      * Testing Calender.set from input. Delete when not required.
