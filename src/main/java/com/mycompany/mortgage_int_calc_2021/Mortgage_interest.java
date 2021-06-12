@@ -146,7 +146,7 @@ public class Mortgage_interest
             }
             else
             {
-                System.out.println(apr.getErrorListMessages());
+                System.out.println(apr.getErrorListMessages(true));
             }
 
             this.waitForNextCommand(apr, line) ; 
@@ -167,7 +167,7 @@ public class Mortgage_interest
             }
             else
             {
-                System.out.println(apr.getErrorListMessages());
+                System.out.println(apr.getErrorListMessages(true));
             }
             // Attempt to retrieve a date was made so, loop back.               
             this.waitForNextCommand(apr, line) ;           
@@ -397,7 +397,7 @@ public class Mortgage_interest
         if(processing_start_date == false )
         {
             //* 1a. check the end date to see if it is 40 years or more past the start date. If so, return to prompt after displaying error.
-            if(start_date != null && (!apr.isLocalDateValid(date_label,date_input) || !apr.isLocalDateValid("evaluated start date",start_date, false) || apr.isDateDifferenceGreaterThanLimit(start_date, date_input, "end date", apr.MAX_MORTGAGE_TERM)) )
+            if(start_date != null && (!apr.isLocalDateValid(date_input) || !apr.isLocalDateValid(start_date) || apr.isDateDifferenceGreaterThanLimit(start_date, date_input, "end date", apr.MAX_MORTGAGE_TERM)) )
             {
                 return false;
             }
