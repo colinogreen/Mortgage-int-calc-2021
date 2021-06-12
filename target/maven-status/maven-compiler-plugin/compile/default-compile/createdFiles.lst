@@ -3,6 +3,7 @@ com/mycompany/mortgage_int_calc_2021/Mortgage_interest.class
 my/custom/MessageDisplayer.class
 my/custom/File_operations.class
 my/custom/function/TestOutput.class
+my/custom/finance/Mortgage_calc.class
 my/custom/StringFinder.class
 my/custom/StringFinder$Positions.class
 my/custom/finance/Finance_apr.class

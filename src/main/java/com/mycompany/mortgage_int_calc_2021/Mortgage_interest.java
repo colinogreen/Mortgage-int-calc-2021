@@ -49,25 +49,26 @@ public class Mortgage_interest
         //mc.debugDateTime(); // Comment out when not in use
     
         // Get the values from console input.
-        if(args.length == 5)
+        if(args.length > 2 && args.length <6)
         {
             // * Attempt to set parameters from command line
             mc.validateArgsEntries(apr, args);
         }
         else
         {
-            mc.monthly_repay = mc.getEnterMonthlyRepaymentPrompt(apr, line);
-            mc.int_rate = mc.getEnterInterestRatePrompt(apr, line);
-            mc.mort_remain = mc.getEnterMortgageRemainingPrompt(apr, line);
+            //mc.monthly_repay = mc.showEnterMonthlyRepaymentPrompt(apr, line);
+            mc.showEnterMonthlyRepaymentPrompt(apr, line);
+            mc.showEnterInterestRatePrompt(apr, line);
+            mc.showEnterMortgageRemainingPrompt(apr, line);
 
-            mc.setStartOrEndDateFromPrompt(apr, line,null, true);
-            mc.setStartOrEndDateFromPrompt(apr, line,apr.getCalendarDateFrom(), false);
+            mc.showStartOrEndDateFromPrompt(apr, line,null, true);
+            mc.showStartOrEndDateFromPrompt(apr, line,apr.getCalendarDateFrom(), false);
 
         }
         // Set the values that were entered in the console
-        apr.setMonthRepayment(Double.valueOf(mc.monthly_repay));
-        apr.setInterestRate(Double.valueOf(mc.int_rate));
-        apr.setMortgageRemaining(Double.valueOf(mc.mort_remain));
+        //apr.setMonthRepayment(Double.valueOf(mc.monthly_repay));
+        //apr.setInterestRate(Double.valueOf(mc.int_rate));
+        //apr.setMortgageRemaining(Double.valueOf(mc.mort_remain));
         
         //** Run the program
         apr.processMortgateInterestCalculation();
@@ -78,26 +79,21 @@ public class Mortgage_interest
         
     private void validateArgsEntries( Mortgage_calc apr, String[] args)
     {
+        apr.setMonthlyRepaymentAmount(args[0].trim(), apr.MAX_MONTHLY_REPAYMENT, 1, "monthly_repayment", "Monthly repayment");
+        //System.out.println("Error list count - setMonthlyRepaymentAmount: " + apr.getErrorListCount());
+        apr.setMonthlyInterestAmount(args[1].trim(), apr.MAX_MORTGAGE_INT_RATE, 0.1, "monthly_interest", "Monthly Interest rate");
+        //System.out.println("Error list count - setMonthlyInterestAmount: " + apr.getErrorListCount());
+        apr.setMortgageRemainingAmount(args[2].trim(), apr.MAX_MORTGAGE_LOAN, 1000, "mortgage_remaining", "Mortgage loan remaining");
+        //System.out.println("Error list count - setMortgageRemainingAmount: " + apr.getErrorListCount());
+        String start_date = (args.length > 3)? args[3]: "";
+        String end_date = (args.length > 4)? args[4]: "";
+        this.setStartOrEndDate(apr, start_date, null, true);
+        //System.out.println("Error list count - setStartOrEndDate 1: " + apr.getErrorListCount());
+        this.setStartOrEndDate(apr, end_date, apr.getCalendarDateFrom(), false);
+        //System.out.println("Error list count - setStartOrEndDate 2: " + apr.getErrorListCount());
+        
+        this.exitIfErrors(apr);
 
-        if(apr.validateNumberAsDouble("monthly_repayment", args[0], "The monthly repayment entered is invalid (" + args[0].substring(0, Math.min(15, args[0].length())) + ")"))
-        {
-            this.monthly_repay = args[0];
-        }
-
-        if(apr.validateNumberAsDouble("interest_rate", args[1], "The interest rate entered is invalid (" + args[1].substring(0, Math.min(15, args[1].length())) + ")"))
-        {
-            this.int_rate = args[1];
-        } 
-        //int_rate = args[1];
-        if(apr.validateNumberAsDouble("mortgage_remaining",args[2], "The mortgage amount remaining is invalid (" + args[2].substring(0, Math.min(15, args[2].length())) + ")"))
-        {
-            this.mort_remain = args[2];
-        }             
-        //mort_remain = args[2];            
-        apr.setCalendarDate(args[3], true); // true start date           
-        apr.setCalendarDate(args[4], false); // false for end date 
-
-        this.exitIfErrors(apr); // If supplied arguments are not validated, exit program
     }
     
     private void exitIfErrors(Mortgage_calc apr)
@@ -106,9 +102,10 @@ public class Mortgage_interest
         {
             for(Object e: apr.getErrorListValuesArray())
             {
+                
                 System.out.println((String)e);
             }
-
+            System.out.println("\n== Exiting due to " + apr.getErrorListCount() + " error(s) ==");
             System.exit(0);
         }        
     }
@@ -272,49 +269,54 @@ public class Mortgage_interest
         return potential_messages[new Random().nextInt(3)];
     }
         
-    private String getEnterMonthlyRepaymentPrompt(Mortgage_calc apr, Scanner line)
+    private void showEnterMonthlyRepaymentPrompt(Mortgage_calc apr, Scanner line)
     {
         System.out.println(apr.promptForMonthlyMortgageRepayment());
         String monthly_repayment= line.nextLine();
         checkForQuit(monthly_repayment);
         //oolean num_double = apr.checkIfInputNumberIsADouble(monthly_repayment);
-        
-        if(!this.isNumberInputValid(apr, monthly_repayment,Double.valueOf(apr.MAX_MONTHLY_REPAYMENT), 10, "monthly_repayment", "monthly repayment"))
+        // setMonthlyRepaymentAmount(String amount, double max_num, double min_num, String field_name, String field_label)
+        if(!apr.setMonthlyRepaymentAmount(monthly_repayment.trim(), apr.MAX_MONTHLY_REPAYMENT, 1, "monthly_repayment", "Monthly repayment"))
         {
-            return this.getEnterMonthlyRepaymentPrompt(apr, line);
+            System.out.println(apr.getErrorListMessages(true));
+            this.showEnterMonthlyRepaymentPrompt(apr, line);
         }
-
-        return monthly_repayment;
+        
+        //this.monthly_repay = monthly_repayment.trim();
+        
     }
     
-    private String getEnterInterestRatePrompt(Mortgage_calc apr, Scanner line)
+    private void showEnterInterestRatePrompt(Mortgage_calc apr, Scanner line)
     {
         System.out.println(apr.promptForInterestRate());
         String interest_rate = line.nextLine();
         this.checkForQuit(interest_rate);
         //boolean num_double = apr.checkIfInputNumberIsADouble(interest_rate);
 
-        if(!this.isNumberInputValid(apr, interest_rate,apr.MAX_MORTGAGE_INT_RATE, 0.1, "interest_rate", "mortgage interest rate"))
+        if(!apr.setMonthlyInterestAmount(interest_rate.trim(),apr.MAX_MORTGAGE_INT_RATE, 0.1, "interest_rate", "mortgage interest rate"))
         {
-            return this.getEnterInterestRatePrompt(apr, line);
+            System.out.println(apr.getErrorListMessages(true));
+            this.showEnterInterestRatePrompt(apr, line);
         }        
        
-        return interest_rate;
+        //return interest_rate;
     }
     
-    private String getEnterMortgageRemainingPrompt(Mortgage_calc apr, Scanner line)
+    private void showEnterMortgageRemainingPrompt(Mortgage_calc apr, Scanner line)
     {
         System.out.println(apr.promptForMortgageRemaining());
         String mort_remaining = line.nextLine();
         this.checkForQuit(mort_remaining);
+        
         //boolean num_double = apr.checkIfInputNumberIsADouble(mort_remaining);
 
-        if(!this.isNumberInputValid(apr, mort_remaining,Double.valueOf(apr.MAX_MORTGAGE_LOAN), 1000, "mort_remaining", "mortgage loan amount"))
+        if(!apr.setMortgageRemainingAmount(mort_remaining.trim(),Double.valueOf(apr.MAX_MORTGAGE_LOAN), 1000, "mort_remaining", "mortgage loan amount"))
         {
-            return this.getEnterMortgageRemainingPrompt(apr, line);
+            System.out.println(apr.getErrorListMessages(true));
+            this.showEnterMortgageRemainingPrompt(apr, line);
         }             
          
-        return mort_remaining;
+        //return mort_remaining;
     }
     
     private boolean isNumberInputValid(Mortgage_calc apr,String input_number,double max_num, double min_num, String field_name, String field_label)
@@ -341,14 +343,15 @@ public class Mortgage_interest
         }       
         return true;
     }
-    private void setStartOrEndDateFromPrompt(Mortgage_calc apr, Scanner line,String start_date, boolean start_or_end)
+    private void showStartOrEndDateFromPrompt(Mortgage_calc apr, Scanner line,String start_date, boolean start_or_end)
     {
         System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
         String start_or_end_date = line.nextLine(); 
-        //boolean set_date = ;
+        apr.resetMessageString();
         if(!this.setStartOrEndDate(apr, start_or_end_date, start_date, start_or_end))
         {
-            this.setStartOrEndDateFromPrompt(apr,line,start_date, start_or_end);
+            System.out.println(apr.getErrorListMessages(true));
+            this.showStartOrEndDateFromPrompt(apr,line,start_date, start_or_end);
         }
     }
     /**
@@ -361,14 +364,14 @@ public class Mortgage_interest
     //private String setStartOrEndDate(Mortgage_calc apr, Scanner line,String start_date, boolean start_or_end)
     private boolean setStartOrEndDate(Mortgage_calc apr, String date_input,String start_date, boolean processing_start_date)
     {
-        
-
+        String date_label = (processing_start_date)? "start date": "end date";
 //        System.out.println("**DEBUG evaluating getStartOrEndDatePrompt overload: start_date: " + start_date + " - apr.MAX_MORTGAGE_TERM: " 
 //                + apr.MAX_MORTGAGE_TERM + " start_or_end_date = "+ start_or_end_date);
         this.checkForQuit(date_input);
         
         if(date_input.trim().isEmpty()&& processing_start_date)
         {
+            //* Set default start date
             apr.resetMessageString();
             apr.setDefaultDateFrom(); // * Set start date
             System.out.println(apr.getMessageString());
@@ -376,6 +379,7 @@ public class Mortgage_interest
         } 
         else if(date_input.trim().isEmpty()&& !processing_start_date)
         {
+            //* Set default end date
             apr.resetMessageString();
             apr.setDefaultDateTo(); //* Set end date
             System.out.println(apr.getMessageString());
@@ -386,34 +390,23 @@ public class Mortgage_interest
         if( !apr.isDateEnteredValid(date_input))
         {
             // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
-            System.out.println("* The date (" + date_input + ") " + "appears to be invalid!");
+            apr.setErrorListMessage(date_label, "The " + date_label+ " (" + date_input + ") " + "appears to be invalid!");
             return false;
         }
-        
-//        else if(!date_input.trim().equals(""))
-//        {
-            // 1. Check if console input is on the end_date/date_to field (false)
+
         if(processing_start_date == false )
         {
-            //System.out.println("**DEBUG evaluating MAX YEARS getStartOrEndDatePrompt overload: start_date: " + start_date + " - processing date_input - " + date_input + "- apr.MAX_MORTGAGE_TERM: " + apr.MAX_MORTGAGE_TERM); 
-
             //* 1a. check the end date to see if it is 40 years or more past the start date. If so, return to prompt after displaying error.
-            if(start_date != null && (!apr.isLocalDateValid("local_date",date_input) || apr.isDateDifferenceGreaterThanLimit(start_date, date_input, "end date", apr.MAX_MORTGAGE_TERM)) )
+            if(start_date != null && (!apr.isLocalDateValid(date_label,date_input) || !apr.isLocalDateValid("evaluated start date",start_date, false) || apr.isDateDifferenceGreaterThanLimit(start_date, date_input, "end date", apr.MAX_MORTGAGE_TERM)) )
             {
-
-                System.out.println(apr.getErrorListMessages());
-                //line.reset();
-                //return this.setStartOrEndDate(apr, line,start_date, processing_start_date);
                 return false;
-
             }
 
-            //return true;
         }
         //* 2. Check that the console input is not an invalid date
         if(!apr.setCalendarDate(date_input.trim(), processing_start_date))
         {
-            System.out.println("* The date (" + date_input + ") could not be set!");
+            //System.out.println("The date (" + date_input + ") could not be set!");
             return false;
         }
         //* 3. Check that end_date/date_to is greater than start_date.
@@ -421,15 +414,12 @@ public class Mortgage_interest
         {
             if(!apr.isDateToGreaterThanDateFrom())
             {
-                System.out.println("The date to cannot be smaller the date from");
+                apr.setErrorListMessage(date_label,"The end date cannot be smaller the start date");
                 return false;                   
             }
             //this.isDateToGreaterThanDateFromMessage(dategreaterthan, apr, line, start_or_end);                 
         }
-//    
-//        }
-
-            
+           
         return true;
     }    
 
