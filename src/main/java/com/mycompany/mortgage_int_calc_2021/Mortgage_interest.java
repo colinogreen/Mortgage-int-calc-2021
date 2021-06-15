@@ -42,7 +42,7 @@ public class Mortgage_interest
         Scanner line = new Scanner(System.in);
         
         // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Mortgage_calc.java
-        Mortgage_calc apr = new Mortgage_calc();
+        MortgageCalculator apr = new MortgageCalculator();
  
         //mc.debugHashMap(); // Comment out when not in use!
         //mc.debugDateCalendar(); // Comment out when not in use       
@@ -77,7 +77,7 @@ public class Mortgage_interest
 
     }
         
-    private void validateArgsEntries( Mortgage_calc apr, String[] args)
+    private void validateArgsEntries( MortgageCalculator apr, String[] args)
     {
         apr.setMonthlyRepaymentAmount(args[0].trim(), apr.MAX_MONTHLY_REPAYMENT, 1, "monthly_repayment", "Monthly repayment");
         //System.out.println("Error list count - setMonthlyRepaymentAmount: " + apr.getErrorListCount());
@@ -96,7 +96,7 @@ public class Mortgage_interest
 
     }
     
-    private void exitIfErrors(Mortgage_calc apr)
+    private void exitIfErrors(MortgageCalculator apr)
     {
         if(apr.getErrorListCount() >0)
         {
@@ -110,7 +110,7 @@ public class Mortgage_interest
         }        
     }
         
-    public void waitForNextCommand(Mortgage_calc apr, Scanner line)
+    public void waitForNextCommand(MortgageCalculator apr, Scanner line)
     {
         //System.out.println(apr.getMortgageInputSummary());
         System.out.println("* Enter a command (Enter -h or help): ");
@@ -128,7 +128,7 @@ public class Mortgage_interest
      * @param line
      * @param command 
      */
-    private void attemptToGetDateInput(Mortgage_calc apr, Scanner line, String command)
+    private void attemptToGetDateInput(MortgageCalculator apr, Scanner line, String command)
     {
         String[] date_range = command.trim().split("\\s+");
         //System.out.println("** Debug: date_range -" + Arrays.toString(date_range));
@@ -174,7 +174,7 @@ public class Mortgage_interest
         }
     }
     
-    private void processCommand(String command, Mortgage_calc apr, Scanner line)
+    private void processCommand(String command, MortgageCalculator apr, Scanner line)
     {
         switch (command.toLowerCase())
         {
@@ -202,7 +202,7 @@ public class Mortgage_interest
         this.waitForNextCommand(apr, line) ; 
     }
     
-    private void getMortgageMilestonesListFromClass(Mortgage_calc apr)
+    private void getMortgageMilestonesListFromClass(MortgageCalculator apr)
     {
         System.out.println("== Mortgage Milestones ==\n");
         System.out.println(apr.getMortgageMilestonesList());
@@ -212,7 +212,7 @@ public class Mortgage_interest
         }       
     }
     
-    private void showSelectedEntries(Mortgage_calc apr,Boolean show_summary)
+    private void showSelectedEntries(MortgageCalculator apr,Boolean show_summary)
     {
         String list_type = show_summary ? "monthly summary": "all";
         System.out.println("== List of " + list_type + " entries ==\n");
@@ -239,7 +239,7 @@ public class Mortgage_interest
 
     }
     
-    private void showhelp(Mortgage_calc apr, Scanner line)
+    private void showhelp(MortgageCalculator apr, Scanner line)
     {
         System.out.println("-a or all: \tView every day of the mortgage search period in this calculation");
         System.out.println("-d yyyy-mm-dd:\tGet record for that day, if it exists");
@@ -269,7 +269,7 @@ public class Mortgage_interest
         return potential_messages[new Random().nextInt(3)];
     }
         
-    private void showEnterMonthlyRepaymentPrompt(Mortgage_calc apr, Scanner line)
+    private void showEnterMonthlyRepaymentPrompt(MortgageCalculator apr, Scanner line)
     {
         System.out.println(apr.promptForMonthlyMortgageRepayment());
         String monthly_repayment= line.nextLine();
@@ -286,7 +286,7 @@ public class Mortgage_interest
         
     }
     
-    private void showEnterInterestRatePrompt(Mortgage_calc apr, Scanner line)
+    private void showEnterInterestRatePrompt(MortgageCalculator apr, Scanner line)
     {
         System.out.println(apr.promptForInterestRate());
         String interest_rate = line.nextLine();
@@ -302,7 +302,7 @@ public class Mortgage_interest
         //return interest_rate;
     }
     
-    private void showEnterMortgageRemainingPrompt(Mortgage_calc apr, Scanner line)
+    private void showEnterMortgageRemainingPrompt(MortgageCalculator apr, Scanner line)
     {
         System.out.println(apr.promptForMortgageRemaining());
         String mort_remaining = line.nextLine();
@@ -319,7 +319,7 @@ public class Mortgage_interest
         //return mort_remaining;
     }
     
-    private boolean isNumberInputValid(Mortgage_calc apr,String input_number,double max_num, double min_num, String field_name, String field_label)
+    private boolean isNumberInputValid(MortgageCalculator apr,String input_number,double max_num, double min_num, String field_name, String field_label)
     {
         boolean num_double = apr.checkIfInputNumberIsADouble(input_number);
         
@@ -343,7 +343,7 @@ public class Mortgage_interest
         }       
         return true;
     }
-    private void showStartOrEndDateFromPrompt(Mortgage_calc apr, Scanner line,String start_date, boolean start_or_end)
+    private void showStartOrEndDateFromPrompt(MortgageCalculator apr, Scanner line,String start_date, boolean start_or_end)
     {
         System.out.println(apr.promptForDateOfCalculations(start_or_end, true));
         String start_or_end_date = line.nextLine(); 
@@ -361,8 +361,8 @@ public class Mortgage_interest
      * @param start_or_end
      * @return 
      */
-    //private String setStartOrEndDate(Mortgage_calc apr, Scanner line,String start_date, boolean start_or_end)
-    private boolean setStartOrEndDate(Mortgage_calc apr, String date_input,String start_date, boolean processing_start_date)
+    //private String setStartOrEndDate(MortgageCalculator apr, Scanner line,String start_date, boolean start_or_end)
+    private boolean setStartOrEndDate(MortgageCalculator apr, String date_input,String start_date, boolean processing_start_date)
     {
         String date_label = (processing_start_date)? "start date": "end date";
 //        System.out.println("**DEBUG evaluating getStartOrEndDatePrompt overload: start_date: " + start_date + " - apr.MAX_MORTGAGE_TERM: " 

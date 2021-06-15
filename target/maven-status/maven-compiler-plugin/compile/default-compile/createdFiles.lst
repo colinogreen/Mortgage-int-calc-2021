@@ -1,12 +1,12 @@
+my/custom/finance/MortgageCalculator.class
 my/custom/Script_timer.class
+my/custom/finance/FinanceApr.class
 com/mycompany/mortgage_int_calc_2021/Mortgage_interest.class
 my/custom/MessageDisplayer.class
 my/custom/File_operations.class
 my/custom/function/TestOutput.class
-my/custom/finance/Mortgage_calc.class
 my/custom/StringFinder.class
 my/custom/StringFinder$Positions.class
-my/custom/finance/Finance_apr.class
 my/custom/function/ArrayHelper.class
 my/custom/Savings_form_process.class
 my/custom/Savings_interest_engine.class
