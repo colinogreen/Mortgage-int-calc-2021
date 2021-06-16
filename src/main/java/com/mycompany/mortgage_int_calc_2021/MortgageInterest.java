@@ -142,6 +142,11 @@ public class MortgageInterest
             mcalc.setErrorListItem("arguments_length", "Not enough parameters for overpayment command", true);
             return false;
         }
+        /**
+         * @todo 
+         * More validation
+         */
+        mcalc.addMortgageOverpayment(overpay_args[1], Double.valueOf(overpay_args[2]));
         
         return true;
     }
