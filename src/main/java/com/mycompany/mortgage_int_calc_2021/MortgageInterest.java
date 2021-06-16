@@ -18,7 +18,10 @@ import java.text.*;
 //import my.custom.MessageDisplayer;
 /**
  *
- * @author colino20_04
+ * @author Colin M.
+ * This class uses the following external classes:
+ * https://github.com/colinogreen/java-custom-classes/blob/master/my/custom/finance/MortgageCalculator.java
+ * https://github.com/colinogreen/java-custom-classes/blob/master/my/custom/finance/FinanceApr.java
  */
 public class MortgageInterest 
 {
