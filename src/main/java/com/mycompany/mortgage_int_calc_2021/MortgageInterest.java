@@ -67,12 +67,15 @@ public class MortgageInterest
         }
         
         //** Run the program
-        mcalc.processMortgateInterestCalculation();
-        System.out.println(mcalc.getMortgageInputSummary());
-        mi.waitForNextCommand(mcalc, line);
+        mi.runMortgageInterestCalculations(mcalc, line);
 
     }
-        
+    private void runMortgageInterestCalculations(MortgageCalculator mcalc,Scanner line)
+    {
+        mcalc.processMortgateInterestCalculation();
+        System.out.println(mcalc.getMortgageInputSummary());
+        this.waitForNextCommand(mcalc, line);        
+    }        
     private void validateArgsEntries( MortgageCalculator mcalc, String[] args)
     {
         mcalc.setMonthlyRepaymentAmount(args[0].trim(), mcalc.MAX_MONTHLY_REPAYMENT, 1, "monthly_repayment", "Monthly repayment");
@@ -167,7 +170,12 @@ public class MortgageInterest
             this.waitForNextCommand(mcalc, line) ;           
         }
     }
-    
+    /**
+     * Process commands following first run of the calculations
+     * @param command
+     * @param mcalc
+     * @param line 
+     */
     private void processCommand(String command, MortgageCalculator mcalc, Scanner line)
     {
         switch (command.toLowerCase())
@@ -188,6 +196,10 @@ public class MortgageInterest
             case "-m":
             case "milestones":
             this.getMortgageMilestonesListFromClass(mcalc);
+            break;
+            case "-r":
+            case "rerun":
+            this.runMortgageInterestCalculations(mcalc,line);
             break;
             default:
             System.out.println("Try again.");

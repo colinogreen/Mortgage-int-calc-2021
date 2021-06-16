@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath com.mycompany.mortgage_int_calc_2021.MortgageInterest 259.74 3.99 34609.05 2018-03-31 2033-02-28</exec.args>
+                <exec.args>-classpath %classpath com.mycompany.mortgage_int_calc_2021.MortgageInterest</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>/home/colino20_04/NetBeansProjects/mortgage_int_calc_2021/src</exec.workingdir>
             </properties>
@@ -25,7 +25,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath com.mycompany.mortgage_int_calc_2021.MortgageInterest 259.74 3.99 34609.05 2018-03-31 2033-02-28</exec.args>
+                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath com.mycompany.mortgage_int_calc_2021.MortgageInterest</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
                 <exec.workingdir>/home/colino20_04/NetBeansProjects/mortgage_int_calc_2021/src</exec.workingdir>
@@ -41,7 +41,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath com.mycompany.mortgage_int_calc_2021.MortgageInterest 259.74 3.99 34609.05 2018-03-31 2033-02-28</exec.args>
+                <exec.args>-classpath %classpath com.mycompany.mortgage_int_calc_2021.MortgageInterest</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>/home/colino20_04/NetBeansProjects/mortgage_int_calc_2021/src</exec.workingdir>
             </properties>

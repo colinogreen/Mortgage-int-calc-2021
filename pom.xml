@@ -47,7 +47,7 @@
                     <manifest>
 
                     <!-- give full qualified name of your main class-->
-                      <mainClass>com.mycompany.mortgage_int_calc_2021.Mortgage_interest</mainClass>
+                      <mainClass>com.mycompany.mortgage_int_calc_2021.MortgageInterest</mainClass>
 
                     </manifest>
                   </archive>
