@@ -1,6 +1,7 @@
 
 package com.mycompany.mortgage_int_calc_2021;
 import java.util.*;
+//import java.util.Arrays;
 //import java.util.Calendar;
 import java.time.*;
 import java.time.Month;
@@ -113,10 +114,36 @@ public class MortgageInterest
         String command = line.nextLine();
 
         this.attemptToGetDateInput(mcalc, line, command);
+        this.attemptToGetOverpaymentInput(mcalc, line, command);
         // Check for quit and process command if necessary.
         this.checkForQuit(command.trim());
         this.processCommand(command.trim(), mcalc, line); 
 
+    }
+    
+    private void attemptToGetOverpaymentInput(MortgageCalculator mcalc, Scanner line, String command)
+    {
+        if(command.contains("-o"))
+        {
+            //System.out.println("Command entered:" + Arrays.toString(command.split(" ")));
+            if(!validateAndProcessOverpaymentInput(command.split(" "), mcalc, line, command))
+            {
+                System.out.println(mcalc.getErrorListMessages(true));
+            }
+            this.waitForNextCommand(mcalc, line);             
+        }
+
+    }
+    
+    private boolean validateAndProcessOverpaymentInput(String[] overpay_args,MortgageCalculator mcalc, Scanner line, String command)
+    {
+        if(overpay_args.length != 3)
+        {
+            mcalc.setErrorListItem("arguments_length", "Not enough parameters for overpayment command", true);
+            return false;
+        }
+        
+        return true;
     }
     /**
      * Find individual date or a date range.
@@ -166,8 +193,10 @@ public class MortgageInterest
                 System.out.println(mcalc.getErrorListMessages(true));
             }
             // Attempt to retrieve a date was made so, loop back.               
-            this.waitForNextCommand(mcalc, line) ;           
+            this.waitForNextCommand(mcalc, line);           
         }
+        
+        // Or fall through to the next command attempting to read console input.
     }
     /**
      * Process commands following first run of the calculations
@@ -246,13 +275,15 @@ public class MortgageInterest
     
     private void showhelp(MortgageCalculator mcalc, Scanner line)
     {
-        System.out.println("-a or all: \tView every day of the mortgage search period in this calculation");
+        System.out.println("-a, all: \tView every day of the mortgage search period in this calculation");
         System.out.println("-d yyyy-mm-dd:\tGet record for that day, if it exists");
         System.out.println("-r yyyy-mm-dd yyyy-mm-dd:\tGet range of records for the two dates, if they exist.");
-        System.out.println("-h or help:\tView help");
-        System.out.println("-m or milestones:\tShow mortgage milestones for this run");
-        System.out.println("-q or quit: \tQuit this program");
-        System.out.println("-s or summary: \tView a summary of this calculation");
+        System.out.println("-h, help:\tView help");
+        System.out.println("-m, milestones:\tShow mortgage milestones for this run");
+        System.out.println("-o yyyy-mm-dd 00.00:\tAdd overpayment date and amount before re-run");
+        System.out.println("-q, quit: \tQuit this program");
+        System.out.println("-r:\tRe-run this program");
+        System.out.println("-s, summary: \tView a summary of this calculation");
 
         //System.out.println();
         this.waitForNextCommand(mcalc, line); 
@@ -394,7 +425,7 @@ public class MortgageInterest
         if( !mcalc.isDateEnteredValid(date_input))
         {
             // Re-run, as there was an attempt to enter a date but it failed SimpleDateFormat validity check
-            mcalc.setErrorListMessage(date_label, "The " + date_label+ " (" + date_input + ") " + "appears to be invalid!");
+            mcalc.setErrorListItem(date_label, "The " + date_label+ " (" + date_input + ") " + "appears to be invalid!");
             return false;
         }
 
@@ -418,7 +449,7 @@ public class MortgageInterest
         {
             if(!mcalc.isDateToGreaterThanDateFrom())
             {
-                mcalc.setErrorListMessage(date_label,"The end date cannot be smaller the start date");
+                mcalc.setErrorListItem(date_label,"The end date cannot be smaller the start date");
                 return false;                   
             }               
         }
