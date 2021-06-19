@@ -130,34 +130,61 @@ public class MortgageInterest
     
     private void attemptToGetOverpaymentInput(MortgageCalculator mcalc, Scanner line, String command)
     {
+        mcalc.resetErrorList();
         if(command.contains("-ol") || command.contains("-od"))
         {
             //System.out.println("Command entered:" + Arrays.toString(command.split(" ")));
             this.overpaymentInputListorDelete(command.split(" "), mcalc, line, command);
-            this.waitForNextCommand(mcalc, line);             
+            
+            if(mcalc.getErrorListCount() > 0)
+            {
+                System.out.println(mcalc.getErrorListMessages(true));
+            }
+            this.waitForNextCommand(mcalc, line);           
         }
         
         else if(command.contains("-o"))
         {
-            //System.out.println("Command entered:" + Arrays.toString(command.split(" ")));
+            System.out.println("== Overpayments: Addition attempt ==");
             if(!overpaymentInputValidateAndProcess(command.split(" "), mcalc, line, command))
             {
                 System.out.println(mcalc.getErrorListMessages(true));
             }
+
             this.waitForNextCommand(mcalc, line);             
         }
-
+        
+        // Or fall through to the next command reading user input.
     }
     
     private void overpaymentInputListorDelete(String[] overpay_args,MortgageCalculator mcalc, Scanner line, String command)
     {
         if(overpay_args.length == 1 && overpay_args[0].equals("-ol") )
         {
-            System.out.println(mcalc.listMortgageOverpayments());
+            System.out.println("== Overpayments: List ==");
+            System.out.println(mcalc.listMortgageOverpayments()+ "\n");
         }
         
-        if(overpay_args.length == 2 && overpay_args[0].equals("-od") )
+        if(overpay_args.length == 2 && overpay_args[0].equals("-od"))
         {
+            System.out.println("== Overpayments: Edit ==");
+            
+            if(!mcalc.isLocalDateValid("overpay_date",overpay_args[1], true))
+            {
+                System.out.println(mcalc.getErrorListMessages(true));
+            }
+            else
+            if(mcalc.isMortgageOverpaymentEntryExists(overpay_args[1]) )
+            {
+                
+                mcalc.removeMortgageOverpaymentEntry(overpay_args[1]);
+                System.out.println("Removing overpayment value for the date, " + overpay_args[1] +"\n");
+            }
+            else
+            {
+                System.out.println("Could not find overpayment entry for the date, " + mcalc.truncateLongString(overpay_args[1]) +"\n");
+            }
+            
             /**
              * @todo something
              */
@@ -170,6 +197,12 @@ public class MortgageInterest
         if(overpay_args.length != 3)
         {
             mcalc.setErrorListItem("arguments_length", "Not enough parameters for overpayment command", true);
+            return false;
+        }
+        
+        if(!mcalc.isLocalDateValid(overpay_args[1]))
+        {
+            mcalc.setErrorListItem("overpay_date", "The date (" + mcalc.truncateLongString(overpay_args[1]) + ") appears to be invalid");
             return false;
         }
         /**
