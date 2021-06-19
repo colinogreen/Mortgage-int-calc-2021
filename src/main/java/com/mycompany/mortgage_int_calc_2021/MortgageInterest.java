@@ -130,10 +130,17 @@ public class MortgageInterest
     
     private void attemptToGetOverpaymentInput(MortgageCalculator mcalc, Scanner line, String command)
     {
-        if(command.contains("-o"))
+        if(command.contains("-ol") || command.contains("-od"))
         {
             //System.out.println("Command entered:" + Arrays.toString(command.split(" ")));
-            if(!validateAndProcessOverpaymentInput(command.split(" "), mcalc, line, command))
+            this.overpaymentInputListorDelete(command.split(" "), mcalc, line, command);
+            this.waitForNextCommand(mcalc, line);             
+        }
+        
+        else if(command.contains("-o"))
+        {
+            //System.out.println("Command entered:" + Arrays.toString(command.split(" ")));
+            if(!overpaymentInputValidateAndProcess(command.split(" "), mcalc, line, command))
             {
                 System.out.println(mcalc.getErrorListMessages(true));
             }
@@ -142,7 +149,23 @@ public class MortgageInterest
 
     }
     
-    private boolean validateAndProcessOverpaymentInput(String[] overpay_args,MortgageCalculator mcalc, Scanner line, String command)
+    private void overpaymentInputListorDelete(String[] overpay_args,MortgageCalculator mcalc, Scanner line, String command)
+    {
+        if(overpay_args.length == 1 && overpay_args[0].equals("-ol") )
+        {
+            System.out.println(mcalc.listMortgageOverpayments());
+        }
+        
+        if(overpay_args.length == 2 && overpay_args[0].equals("-od") )
+        {
+            /**
+             * @todo something
+             */
+            //System.out.println();
+        }
+    }
+    
+    private boolean overpaymentInputValidateAndProcess(String[] overpay_args,MortgageCalculator mcalc, Scanner line, String command)
     {
         if(overpay_args.length != 3)
         {
