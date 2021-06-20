@@ -68,12 +68,14 @@ public class MortgageInterest
         
         //** Run the program
         mi.runMortgageInterestCalculations(mcalc, line);
+        
 
     }
     private void runMortgageInterestCalculations(MortgageCalculator mcalc,Scanner line)
     {
         mcalc.processMortgateInterestCalculation();
         System.out.println(mcalc.getMortgageInputSummary());
+        mcalc.setInitialMortgagePaymentAndInterestTotals();
         this.waitForNextCommand(mcalc, line);        
     } 
     
@@ -196,29 +198,16 @@ public class MortgageInterest
             return false;
         }
         
-        if(!mcalc.isLocalDateValid(overpay_args[1]))
+        if(mcalc.overpaymentInputValidateAndProcess(overpay_args[1], overpay_args[2]))
         {
-            mcalc.setErrorListItem("overpay_date", "The date (" + mcalc.truncateLongString(overpay_args[1]) + ") appears to be invalid");
-            //return false;
+            mcalc.addMortgageOverpayment(overpay_args[1], Double.valueOf(overpay_args[2]));
+            System.out.println(mcalc.getMessageString());
+            return true;      
         }
-        if(!mcalc.checkIfInputNumberIsADouble(overpay_args[2]))
-        {
-            mcalc.setErrorListItem("overpay_amount", "The overpayment amount (" + mcalc.truncateLongString(overpay_args[2]) + ") appears to be invalid");
-        }
-     
-        if(mcalc.getErrorListCount()>0)
-        {
-            return false;
-        }
-        // This will check the validity/size of the overpayment amount and set error messages (if necessary) based on a valid date and overpayment amount being entered
-        if(!mcalc.isMortgageOverpaymentAmountForDayValid(overpay_args[1], Double.valueOf(overpay_args[2])))
-        {
-            return false;
-        }   
+        
+        return false; // ...if mcalc.addMortgageOverpayment is not processed, as expected.
 
-        mcalc.addMortgageOverpayment(overpay_args[1], Double.valueOf(overpay_args[2]));
-        System.out.println(mcalc.getMessageString());
-        return true;
+
     }
     /**
      * Find individual date or a date range.
