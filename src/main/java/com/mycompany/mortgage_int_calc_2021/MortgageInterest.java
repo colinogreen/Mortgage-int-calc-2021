@@ -184,11 +184,7 @@ public class MortgageInterest
             {
                 System.out.println("Could not find overpayment entry for the date, " + mcalc.truncateLongString(overpay_args[1]) +"\n");
             }
-            
-            /**
-             * @todo something
-             */
-            //System.out.println();
+
         }
     }
     
@@ -203,14 +199,25 @@ public class MortgageInterest
         if(!mcalc.isLocalDateValid(overpay_args[1]))
         {
             mcalc.setErrorListItem("overpay_date", "The date (" + mcalc.truncateLongString(overpay_args[1]) + ") appears to be invalid");
+            //return false;
+        }
+        if(!mcalc.checkIfInputNumberIsADouble(overpay_args[2]))
+        {
+            mcalc.setErrorListItem("overpay_amount", "The overpayment amount (" + mcalc.truncateLongString(overpay_args[2]) + ") appears to be invalid");
+        }
+     
+        if(mcalc.getErrorListCount()>0)
+        {
             return false;
         }
-        /**
-         * @todo 
-         * More validation
-         */
+        // This will check the validity/size of the overpayment amount and set error messages (if necessary) based on a valid date and overpayment amount being entered
+        if(!mcalc.isMortgageOverpaymentAmountForDayValid(overpay_args[1], Double.valueOf(overpay_args[2])))
+        {
+            return false;
+        }   
+
         mcalc.addMortgageOverpayment(overpay_args[1], Double.valueOf(overpay_args[2]));
-        
+        System.out.println(mcalc.getMessageString());
         return true;
     }
     /**
@@ -421,7 +428,16 @@ public class MortgageInterest
          
         //return mort_remaining;
     }
-    
+    /**
+     * @deprecated 
+     * @param mcalc
+     * @param input_number
+     * @param max_num
+     * @param min_num
+     * @param field_name
+     * @param field_label
+     * @return 
+     */
     private boolean isNumberInputValid(MortgageCalculator mcalc,String input_number,double max_num, double min_num, String field_name, String field_label)
     {
         boolean num_double = mcalc.checkIfInputNumberIsADouble(input_number);
