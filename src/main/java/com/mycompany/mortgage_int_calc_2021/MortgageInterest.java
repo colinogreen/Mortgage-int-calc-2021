@@ -171,7 +171,7 @@ public class MortgageInterest
         {
             System.out.println("== Overpayments: Edit ==");
             
-            if(!mcalc.isLocalDateValid("overpay_date",overpay_args[1], true))
+            if(!mcalc.isLocalDateValid("overpayment date",overpay_args[1], true))
             {
                 System.out.println(mcalc.getErrorListMessages(true));
             }
@@ -180,7 +180,7 @@ public class MortgageInterest
             {
                 
                 mcalc.removeMortgageOverpaymentEntry(overpay_args[1]);
-                System.out.println("Removing overpayment value for the date, " + overpay_args[1] +"\n");
+                System.out.println("Removing overpayment value for the date, " + overpay_args[1] +". Type -r to re-run the calculations.\n");
             }
             else
             {
@@ -345,8 +345,10 @@ public class MortgageInterest
         System.out.println("-h, help:\tView help");
         System.out.println("-m, milestones:\tShow mortgage milestones for this run");
         System.out.println("-o yyyy-mm-dd 00.00:\tAdd overpayment date and amount before re-run");
+        System.out.println("-od yyyy-mm-dd:\tDelete overpayment date");
+        System.out.println("-ol:\t\tList current overpayment dates");       
         System.out.println("-q, quit: \tQuit this program");
-        System.out.println("-r:\tRe-run this program");
+        System.out.println("-r:\t\tRe-run this program");
         System.out.println("-s, summary: \tView a summary of this calculation");
 
         //System.out.println();
