@@ -13,9 +13,8 @@ import java.util.Scanner;
 /**
  *
  * @author Colin M.
- * This class uses the following external classes:
- * https://github.com/colinogreen/java-custom-classes/blob/master/my/custom/finance/MortgageCalculator.java
- * https://github.com/colinogreen/java-custom-classes/blob/master/my/custom/finance/FinanceApr.java
+ * This class uses external classes at the following location:
+ * https://github.com/colinogreen/java-custom-classes/blob/master/my/custom/finance
  */
 public class MortgageInterest 
 {
@@ -38,12 +37,9 @@ public class MortgageInterest
 
         Scanner line = new Scanner(System.in);
         
-        // Most of the engine for this command line script is in https://bitbucket.org/colinogreen/java-custom-classes/src/master/my/custom/finance/Mortgage_calc.java
+        // Most of the engine for this command line script is in the Mortgage Calculator class at ...
+        //... https://github.com/colinogreen/java-custom-classes/blob/master/my/custom/finance
         MortgageCalculator mcalc = new MortgageCalculator();
- 
-        //mc.debugHashMap(); // Comment out when not in use!
-        //mc.debugDateCalendar(); // Comment out when not in use       
-        //mc.debugDateTime(); // Comment out when not in use
     
         // Get the values from console input.
         if(args.length > 2 && args.length <6)
@@ -53,7 +49,6 @@ public class MortgageInterest
         }
         else
         {
-            //mi.monthly_repay = mc.showEnterMonthlyRepaymentPrompt(apr, line);
             mi.showEnterMonthlyRepaymentPrompt(mcalc, line);
             mi.showEnterInterestRatePrompt(mcalc, line);
             mi.showEnterMortgageRemainingPrompt(mcalc, line);
@@ -217,7 +212,7 @@ public class MortgageInterest
         String[] date_range = command.trim().split("\\s+");
         //System.out.println("** Debug: date_range -" + Arrays.toString(date_range));
         // if two dates have been entered with the first parameter, -r (range)...
-        if(date_range.length == 3 && date_range[0].equals("-r") )
+        if(date_range.length == 3 && date_range[0].equals("-rn") )
         {          
             mcalc.getMortgageDayFiguresRangeFromTo(date_range[1], date_range[2]);
             if(mcalc.getErrorListCount() == 0)
@@ -338,7 +333,7 @@ public class MortgageInterest
     {
         System.out.println("-a, all: \tView every day of the mortgage search period in this calculation");
         System.out.println("-d yyyy-mm-dd:\tGet record for that day, if it exists");
-        System.out.println("-r yyyy-mm-dd yyyy-mm-dd:\tGet range of records for the two dates, if they exist.");
+        System.out.println("-rn yyyy-mm-dd yyyy-mm-dd:\tGet range of records for the two dates, if they exist.");
         System.out.println("-h, help:\tView help");
         System.out.println("-m, milestones:\tShow mortgage milestones for this run");
         System.out.println("-o yyyy-mm-dd 00.00:\tAdd overpayment date and amount before re-run");
@@ -472,8 +467,7 @@ public class MortgageInterest
     private boolean setStartOrEndDate(MortgageCalculator mcalc, String date_input,String start_date, boolean processing_start_date)
     {
         String date_label = (processing_start_date)? "start date": "end date";
-//        System.out.println("**DEBUG evaluating getStartOrEndDatePrompt overload: start_date: " + start_date + " - mcalc.MAX_MORTGAGE_TERM: " 
-//                + mcalc.MAX_MORTGAGE_TERM + " start_or_end_date = "+ start_or_end_date);
+
         this.checkForQuit(date_input);
         
         if(date_input.trim().isEmpty()&& processing_start_date)
