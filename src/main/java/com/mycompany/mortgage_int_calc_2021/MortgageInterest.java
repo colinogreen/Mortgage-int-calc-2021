@@ -10,9 +10,6 @@ import my.custom.finance.*;
 
 import java.util.Scanner;
 
-//import java.text.ParseException;
-import java.text.*;
-//import my.custom.MessageDisplayer;
 /**
  *
  * @author Colin M.
@@ -534,6 +531,7 @@ public class MortgageInterest
 
     
     /**
+     * @deprecated
      * Testing Calender.set from input. Delete when not required.
      */    
     private void debugDateCalendar()
@@ -551,6 +549,7 @@ public class MortgageInterest
         
     }
     /**
+     * @deprecated
      * Testing LocalDate/Time. Delete when not required
      */
     private void debugDateTime()
@@ -558,10 +557,7 @@ public class MortgageInterest
         //LocalTime current_time = LocalTime.now();
         LocalDate current_date = LocalDate.now();
         LocalDate future_date =  LocalDate.parse("2022-04-01");
-        //LocalDate future_date =  LocalDate.of(2021, 7, 14);
 
-        
-        //System.out.println("Current time: " + current_time.toString());
         System.out.println("Current date: " + current_date.toString());
         System.out.println("future date: " + future_date.toString());
         double period = Duration.between(current_date.atStartOfDay(), future_date.atStartOfDay()).toDays();
@@ -570,20 +566,5 @@ public class MortgageInterest
         //System.out.println("Future time: " + future_time.toString());
         System.exit(0);
     }
-    
-    private void debugHashMap()
-    {
-        
-        System.out.println("== Debugging method, debugHash ==");
-    HashMap<String, String> capitalCities = new HashMap<String, String>();
 
-    // Add keys and values (Country, City)
-    capitalCities.put("England", "London");
-    capitalCities.put("Germany", "Berlin");
-    capitalCities.put("Norway", "Oslo");
-    capitalCities.put("USA", "Washington DC");
-    System.out.println(capitalCities);        
-        
-        System.exit(0);
-    }
 }
