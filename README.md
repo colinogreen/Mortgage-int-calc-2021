@@ -1,29 +1,11 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This is Code for a Mortgage Interest Calculator that can be used as a basis for a Windows or Linux command line or GUI app as well as an Android app.
 
 ### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
+* This repository give the viewer an idea of Colin M's Java skills and provides potentially useful code that any Java/Android developer can use in there personal applications.
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* Colin M.
